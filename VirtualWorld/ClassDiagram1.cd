@@ -1,37 +1,115 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="VirtualWorld.Individu" Collapsed="true">
-    <Position X="8" Y="2.5" Width="1.5" />
+    <Position X="10" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>World\Individu.cs</FileName>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAgAAAAAAAgIAAACAAAAADA=</HashCode>
+      <FileName>World\Actors\Creatures\Individu.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Intelligence" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="VirtualWorld.ParcelleTerrain" Collapsed="true">
-    <Position X="4" Y="4.75" Width="1.5" />
+    <Position X="8.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAEAAAAAgAAAAAAAAABAAAAAAAAEAAA=</HashCode>
+      <HashCode>AiAAEAAgAAAAAFEAJAAAggAAAAACAQhAAgAAAKAEAAA=</HashCode>
       <FileName>World\ParcelleTerrain.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="VirtualWorld.Monde" Collapsed="true">
-    <Position X="4" Y="2.5" Width="1.5" />
-    <NestedTypes>
-      <Enum Name="VirtualWorld.Monde.ViewType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>World\Monde.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
+    <Position X="6.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAEAAAAAAgAgQAAAAAAAQAgAAAAQAAACAAACAAAAQ=</HashCode>
+      <HashCode>EkQAEghBAAAoAAQAAAYkAAQAgAIAAAAAAGACAYEAAAQ=</HashCode>
       <FileName>World\Monde.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SaisonCourante" />
+    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="Individus" />
       <Property Name="Parcelles" />
+      <Property Name="Fruits" />
+      <Property Name="Graines" />
+      <Property Name="Plantes" />
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="VirtualWorld.World.Factory" Collapsed="true">
+    <Position X="12.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAABAAAAAAAQAADAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>World\Generation\Factory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualWorld.World.PerlinGenerator" Collapsed="true">
+    <Position X="14.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAgQAAAAAAAAAAAAIAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>World\Generation\PerlinGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualWorld.World.Actors.Creature.IA.Brain" Collapsed="true">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>World\Actors\Creatures\IA\Brain.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Neurones" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="VirtualWorld.World.Actors.Creature.Neurone" Collapsed="true">
+    <Position X="12.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQgAAAAAAAAAIAAAAEAAAAAgAACAAAAAAAAA=</HashCode>
+      <FileName>World\Actors\Creatures\IA\Neurone.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Synapses" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="VirtualWorld.EtreVivant" Collapsed="true">
+    <Position X="6.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAIAAAgAAQAAgAAAAIAggAAAIAAhAAAAAAAAAAQA=</HashCode>
+      <FileName>World\Actors\EtreVivant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualWorld.Fruit" Collapsed="true">
+    <Position X="8" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQCAAAAIAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>World\Actors\Fruit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualWorld.Graine" Collapsed="true">
+    <Position X="3.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAgAAgAABAAAAQA=</HashCode>
+      <FileName>World\Actors\Graine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualWorld.Plante" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAACgAAAAQQCAAAAACAAAAgAIgAAAACAAAAARA=</HashCode>
+      <FileName>World\Actors\Plante.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualWorld.World.Actors.Creature.Synapse" Collapsed="true">
+    <Position X="12.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>World\Actors\Creatures\IA\Neurone.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="VirtualWorld.SeasonTournament" Collapsed="true">
+    <Position X="4.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACQJAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>World\Monde.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

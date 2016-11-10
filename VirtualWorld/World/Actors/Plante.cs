@@ -16,6 +16,9 @@ namespace VirtualWorld
 
         public List<ParcelleTerrain> TerreProche { get; set; }
 
+        /// <summary>
+        /// More is this variable more the tree grow quickly
+        /// </summary>
         public float BienEtre { get; set; }
 
         public float TemperatureIdeal { get; set; }
@@ -25,8 +28,6 @@ namespace VirtualWorld
 
         public float TempsGraine { get; set; }
 
-        public Texture2D PictureUsed { get; set; }
-        
         public Plante(Vector2 pos, Monde m):
             base(pos, m)
         {

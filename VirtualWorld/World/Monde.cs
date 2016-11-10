@@ -200,6 +200,7 @@ namespace VirtualWorld
 
             Plantes = Factory.AddPlantes(this, 5);
             Fruits = Factory.AddFruits(this, 10);
+            Individus = Factory.AddIndividus(this, 10);
             this.Graines = new List<Graine>();
         }
 
@@ -217,6 +218,8 @@ namespace VirtualWorld
             Fruit.Pomme = content.Load<Texture2D>("Images//pomme");
 
             Graine.GraineSol = content.Load<Texture2D>("Images//graine");
+
+            Individu.IndividuTexture = content.Load<Texture2D>("Images//indi.png");
         }
 
         public void Update(float deltaTime)
@@ -277,11 +280,16 @@ namespace VirtualWorld
                 Parallel.ForEach(Graines, x => x.UpdateAsynch(deltaTime, this));
             });
 
+            Task tIndividu = Task.Factory.StartNew(() =>
+            {
+                Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
+            });
+
             tFruits.Wait();
             tGraine.Wait();
             tParcelle.Wait();
             tPlante.Wait();
-            
+            tIndividu.Wait();
 
             for (int i = this.Plantes.Count - 1; i >= 0; i--)
             {
@@ -317,6 +325,18 @@ namespace VirtualWorld
                     this.Graines.RemoveAt(i);
                 }
             }
+
+            for (int i = this.Individus.Count - 1; i >= 0; i--)
+            {
+                if(this.Individus[i].Mort == true)
+                {
+                    this.Individus.RemoveAt(i);
+                }
+                else
+                {
+                    this.Individus[i].UpdateSynch(deltaTime, this);
+                }
+            }
         }
 
         public void DrawActors(SpriteBatch spriteBatch)
@@ -324,6 +344,18 @@ namespace VirtualWorld
             DrawGraines(spriteBatch);
             DrawFruits(spriteBatch);
             DrawPlante(spriteBatch);
+            DrawIndividus(spriteBatch);
+        }
+
+        private void DrawIndividus(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < this.Individus.Count; i++)
+            {
+                spriteBatch.Draw(this.Individus[i].PictureUsed,
+                                this.Individus[i].PositionImage, null, Color.White, 0f, Vector2.Zero,
+                                this.Individus[i].FactorAgrandissement,
+                                   SpriteEffects.None, 0f);
+            }
         }
 
         private void DrawGraines(SpriteBatch spriteBatch)
