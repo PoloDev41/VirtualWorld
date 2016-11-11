@@ -61,7 +61,7 @@ namespace VirtualWorld
             this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement / 2, this.Position.Y - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement);
             TemperatureIdeal = rand.Next((int)Math.Round(m.TemperatureMin),
                                             (int)Math.Round(m.TemperatureMax)) + (float)rand.NextDouble();
-            this.RefParcelle = m.Parcelles[(int)this.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX][(int)this.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX];
+            this.RefParcelle = ParcelleTerrain.TransformPixelToParcelle(m, this.Position);
             this.BienEtre = 0;
         }
 

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualWorld.World.Actors.Creature;
 using VirtualWorld.World.Actors.Creature.IA;
+using VirtualWorld.World.Actors.Creatures.IA;
 
 namespace VirtualWorld.World
 {
@@ -56,21 +58,36 @@ namespace VirtualWorld.World
             Individu ind = new Individu(new Microsoft.Xna.Framework.Vector2(x, y), m);
 
             Brain b = new Brain();
-            b.Neurones = new Actors.Creature.Neurone[]
+            b.Neurones = new Actors.Creature.StemCell[]
             {
-                new Actors.Creature.Neurone()
+                new Actors.Creature.Nerf()
                 {
-                    Synapses = new Actors.Creature.Synapse[]
-                    {
-                        //TODO: insert synapse
-                    }
+                    Process = NerfSensorList.AngleNearestFruit
                 },
                 new Actors.Creature.Neurone()
                 {
                     Synapses = new Actors.Creature.Synapse[]
                     {
-                        //TODO: insert synapse
-                    }
+                        new Actors.Creature.Synapse()
+                        {
+                            IndexNeurone = 0,
+                            Weight = 10//Neurone.GenerateNewWeight()
+                        }
+                    },
+                    ActionMuscle = NerfMuscleActionList.RotationIndividu
+                },
+                new Actors.Creature.Neurone()
+                {
+                    Synapses = new Actors.Creature.Synapse[]
+                    {
+                        new Actors.Creature.Synapse()
+                        {
+                            IndexNeurone = 2,
+                            Weight = 10//Neurone.GenerateNewWeight()
+                        }
+                    },
+                    ActionMuscle = NerfMuscleActionList.WalkRight,
+                    Output = 1
                 }
             };
             ind.Intelligence = b;

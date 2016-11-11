@@ -42,6 +42,8 @@
     <Compile Include="Camera2D.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="IRender.cs" />
+    <Compile Include="World\Actors\Creatures\IA\NerfMuscleActionList.cs" />
+    <Compile Include="World\Actors\Creatures\IA\NerfSensorList.cs" />
     <Compile Include="World\Actors\EtreVivant.cs" />
     <Compile Include="World\Actors\Fruit.cs" />
     <Compile Include="World\Actors\Graine.cs" />

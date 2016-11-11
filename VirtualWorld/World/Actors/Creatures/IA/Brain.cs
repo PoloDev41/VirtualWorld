@@ -14,7 +14,7 @@ namespace VirtualWorld.World.Actors.Creature.IA
         /// <summary>
         /// list of neurones
         /// </summary>
-        public Neurone[] Neurones { get; set; }
+        public StemCell[] Neurones { get; set; }
 
         /// <summary>
         /// Create an empty brain

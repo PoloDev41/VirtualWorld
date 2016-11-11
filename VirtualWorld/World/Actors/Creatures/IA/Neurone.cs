@@ -7,6 +7,9 @@ using VirtualWorld;
 
 namespace VirtualWorld.World.Actors.Creature
 {
+    public delegate double NerfSensor(Monde m, Individu proprietaire);
+    public delegate void NerfMuscleAction(Monde m, Individu proprietaire, double power, float deltaTime);
+
     public class Synapse
     {
         /// <summary>
@@ -20,18 +23,56 @@ namespace VirtualWorld.World.Actors.Creature
     }
 
     /// <summary>
+    /// base of kind of intelligence
+    /// </summary>
+    public class StemCell
+    {
+        public double Output { get; set; }
+        protected double NewOutput { get; set; }
+
+        public virtual void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
+        {
+            proprietaire.PointDeVie--;
+        }
+
+        public virtual void UpdateSynch(Monde m, Individu proprietaire, float deltaTime)
+        {
+            this.Output = this.NewOutput;
+        }
+    }
+
+    public class Nerf: StemCell
+    {
+        public NerfSensor Process { get; set; }
+
+        public override void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
+        {
+            base.UpdateAsynch(m, proprietaire, deltaTime);
+            this.NewOutput = this.Process(m, proprietaire);
+        }
+    }
+
+    /// <summary>
     /// class used to emulate a neurone
     /// </summary>
-    public class Neurone
+    public class Neurone : StemCell
     {
-        public Synapse[] Synapses { get; set; }
+        private static Random rand = new Random();
 
-        public double Output { get; set; }
-        private double NewOutput { get; set; }
-
-        public void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
+        public static double GenerateNewWeight()
         {
-            double sum = 0;
+            return rand.Next(-20, 21) * rand.NextDouble();
+        }
+
+        public double Biais { get; set; }
+        public Synapse[] Synapses { get; set; }
+        public NerfMuscleAction ActionMuscle { get; set; }
+
+        public override void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
+        {
+            base.UpdateAsynch(m, proprietaire, deltaTime);
+
+            double sum = Biais;
             for (int i = 0; i < this.Synapses.Length; i++)
             {
                 sum += proprietaire.Intelligence.Neurones[this.Synapses[i].IndexNeurone].Output * this.Synapses[i].Weight;
@@ -39,9 +80,13 @@ namespace VirtualWorld.World.Actors.Creature
             this.NewOutput = SigmoideFct(sum);
         }
 
-        public void UpdateSynch(Monde m, Individu proprietaire, float deltaTime)
+        public override void UpdateSynch(Monde m, Individu proprietaire, float deltaTime)
         {
-            this.Output = this.NewOutput;
+            base.UpdateSynch(m, proprietaire, deltaTime);
+            if(this.ActionMuscle != null)
+            {
+                this.ActionMuscle(m, proprietaire, this.NewOutput, deltaTime);
+            }
         }
 
         public static double SigmoideFct(double x)
@@ -51,7 +96,7 @@ namespace VirtualWorld.World.Actors.Creature
             else if (x < -40)
                 return -1;
 
-            return 1d / (1 + Math.Exp(-x));
+            return 2d / (1 + Math.Exp(-x)) -1;
         }
     }
 }
