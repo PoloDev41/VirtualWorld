@@ -113,7 +113,7 @@ namespace VirtualWorld
             while (this.PointDeVie > this.PointDeVieDemarrage * 4)
             {
                 this.PommeAAjouter++;
-                this.PointDeVie -= this.PointDeVieDemarrage;
+                this.PointDeVie -= this.PointDeVieDemarrage * 1.10f;
             }
 
             if (f > 0 )

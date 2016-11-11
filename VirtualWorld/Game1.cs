@@ -157,7 +157,12 @@ namespace VirtualWorld
             spriteBatch.Begin();
 
             int yPosition = 20;
-            spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString(), new Vector2(20, yPosition), Color.Black);
+            spriteBatch.DrawString(Font, "Age: " + _monde.Years, new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            if(this._monde.GlobalWarmingAction)
+                spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString() + " global warming !", new Vector2(20, yPosition), Color.Black);
+            else
+                spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;
             spriteBatch.DrawString(Font, "Plantes: " + _monde.Plantes.Count.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;

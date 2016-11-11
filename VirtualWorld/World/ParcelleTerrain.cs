@@ -32,6 +32,8 @@ namespace VirtualWorld
             return m.Parcelles[(int)posPx.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX][(int)posPx.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX];
         }
 
+        public static float OffsetTemperatureParcelle { get; set; } = 0;
+
         private float _Engrais;
 
         /// <summary>
@@ -64,15 +66,17 @@ namespace VirtualWorld
         /// </summary>
         public float Temperature_Saison2 { get; set; }
 
+
+        private float _temperature;
         /// <summary>
         /// Temperature de la parcelle
         /// </summary>
         public float Temperature
         {
-            get;
-
-            set;
+            get { return _temperature + OffsetTemperatureParcelle; }
+            set { _temperature = value; }
         }
+
         /// <summary>
         /// lsit of fruit on this parcelle
         /// </summary>
@@ -83,10 +87,10 @@ namespace VirtualWorld
             switch (monde.SaisonCourante)
             {
                 case SeasonTournament.SAISON1_2:
-                    this.Temperature += deltaTime * (this.Temperature_Saison1 - this.Temperature_Saison2) / Monde.TimeInterSeason;
+                    this._temperature += deltaTime * (this.Temperature_Saison1 - this.Temperature_Saison2) / Monde.TimeInterSeason;
                     break;
                 case SeasonTournament.SAISON2_1:
-                    this.Temperature += deltaTime * (this.Temperature_Saison2 - this.Temperature_Saison1) / Monde.TimeInterSeason;
+                    this._temperature += deltaTime * (this.Temperature_Saison2 - this.Temperature_Saison1) / Monde.TimeInterSeason;
                     break;
                 case SeasonTournament.SAISON1:
                 case SeasonTournament.SAISON2:

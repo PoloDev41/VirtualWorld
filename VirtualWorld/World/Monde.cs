@@ -31,17 +31,34 @@ namespace VirtualWorld
             NORMAL
         }
 
-        public float TemperatureMax { get; set; }
-        public float TemperatureMin { get; set; }
+        public float TemperatureMax
+        {
+            get;
+            set;
+        }
+
+        public float TemperatureMin
+        {
+            get;
+            set;
+        }
+
         public float AltitudeMax { get; set; }
         public float AltitudeMin { get; set; }
 
         public static readonly int TimeSeason = 10;
         public static readonly int TimeInterSeason = 30;
+        public static readonly int TimeChangementGlobalWarming = (TimeSeason * 2 + TimeInterSeason * 2) * 1;
         public static Random rand = new Random();
 
+        private bool _viewPlante = true;
         private ViewType _view = ViewType.NORMAL;
         private float _timeSaison = TimeSeason;
+
+        /// <summary>
+        /// number of years of the world
+        /// </summary>
+        public int Years { get; set; } = 1;
 
         /// <summary>
         /// saison courante du monde
@@ -133,6 +150,12 @@ namespace VirtualWorld
                             return "view changed";
                         }
                         break;
+                    case ("Tree"):
+                        if (arguments.Length > 1 && arguments[1] == "Disable")
+                            _viewPlante = false;
+                        else
+                            _viewPlante = true;
+                        break;
                     default:
                         break;
                 }
@@ -146,7 +169,8 @@ namespace VirtualWorld
             get
             {
                 return "-Generate" + Environment.NewLine +
-                        "-View [Temperature-Altitude-Engrais]";
+                        "-View [Temperature-Altitude-Engrais]" + Environment.NewLine +
+                        "Tree [Enable;Disable]";
             }
         }
 
@@ -332,6 +356,7 @@ namespace VirtualWorld
                 switch (this.SaisonCourante)
                 {
                     case SeasonTournament.SAISON1:
+                        Years++;
                         this.SaisonCourante = SeasonTournament.SAISON1_2;
                         _timeSaison = TimeInterSeason;
                         break;
@@ -350,8 +375,8 @@ namespace VirtualWorld
                     default:
                         break;
                 }
-               
             }
+            HandleGlobalWarming(deltaTime);
 
             Task tParcelle = Task.Factory.StartNew(() => {
                 foreach (var item in this.Parcelles)
@@ -449,6 +474,29 @@ namespace VirtualWorld
             }
         }
 
+        private float _newTemperatureOffset = 0;
+        private float _oldTemperatureOffset = 0;
+        private int _yearStartWarming = 0;
+        public bool GlobalWarmingAction = false;
+        private void HandleGlobalWarming(float deltaTime)
+        {
+            if(this.Years % 5 == 0 && GlobalWarmingAction == false)
+            {
+                _yearStartWarming = this.Years;
+                GlobalWarmingAction = true;
+                _newTemperatureOffset = (float)(rand.Next(-2, 3) * rand.NextDouble());
+                _oldTemperatureOffset = ParcelleTerrain.OffsetTemperatureParcelle;
+            }
+            else if(GlobalWarmingAction == true)
+            {
+                ParcelleTerrain.OffsetTemperatureParcelle += deltaTime * (_newTemperatureOffset - _oldTemperatureOffset) / Monde.TimeChangementGlobalWarming;
+                if(this.Years == _yearStartWarming+1)
+                {
+                    GlobalWarmingAction = false;
+                }
+            }
+        }
+
         public void DrawActors(SpriteBatch spriteBatch)
         {
             DrawGraines(spriteBatch);
@@ -483,6 +531,8 @@ namespace VirtualWorld
         private void DrawPlante(SpriteBatch spriteBatch)
         {
             float depth;
+            if (_viewPlante == false)
+                return;
             if(this._view == ViewType.TEMPERATURE)
             {
                 byte ratio;
@@ -552,7 +602,6 @@ namespace VirtualWorld
             }
         }
 
-
         public void DrawGround(SpriteBatch spriteBatch)
         {
             byte ratio;
@@ -576,7 +625,7 @@ namespace VirtualWorld
                             if (Parcelles[i][j].Temperature < 0)
                             {
                                 ratio = (byte)Math.Min(255,
-                                    (Parcelles[i][j].Temperature * 255 / this.TemperatureMin));
+                                    Math.Abs(Parcelles[i][j].Temperature * 255 / this.TemperatureMin));
 
                                 spriteBatch.Draw(ParcelleTerrain.Blanc, new Vector2(i * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX, j * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)
                                     , null, new Color(0, 0, ratio), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -584,7 +633,7 @@ namespace VirtualWorld
                             else
                             {
                                 ratio = (byte)Math.Min(255,
-                                    (Parcelles[i][j].Temperature * 255 / this.TemperatureMax));
+                                    Math.Abs(Parcelles[i][j].Temperature * 255 / this.TemperatureMax));
 
                                 spriteBatch.Draw(ParcelleTerrain.Blanc, new Vector2(i * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX, j * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX),
                                     null, new Color(ratio, 0, 0), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);

@@ -42,6 +42,7 @@ namespace VirtualWorld.World.Actors.Creature
 
         public virtual void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {
+            proprietaire.PointDeVie -= deltaTime;
         }
 
         public virtual void UpdateSynch(Monde m, Individu proprietaire, float deltaTime)
@@ -62,6 +63,7 @@ namespace VirtualWorld.World.Actors.Creature
         public override void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {
             base.UpdateAsynch(m, proprietaire, deltaTime);
+            proprietaire.PointDeVie -= deltaTime; //it's volontary, a nerf sub double
             this.NewOutput = this.Process(m, proprietaire);
         }
 

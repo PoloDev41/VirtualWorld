@@ -84,9 +84,19 @@ namespace VirtualWorld.World.Actors.Creatures.IA
             return angle - proprietaire.Angle;
         }
 
+        public static double DistanceNearestFruit(Monde m, Individu proprietaire)
+        {
+            if (m.Fruits.Count == 0)
+                return 1000000;
+
+            Fruit nearest = FindNearestFruit(m, proprietaire);
+            return Vector2.Distance(nearest.Position, proprietaire.Position)/100;
+        }
+
         public static NerfSensor[] SensorStock = new NerfSensor[]
         {
-            (NerfSensor)AngleNearestFruit
+            (NerfSensor)AngleNearestFruit,
+            DistanceNearestFruit
         };
 
         public static NerfSensor GetRandomSensor()

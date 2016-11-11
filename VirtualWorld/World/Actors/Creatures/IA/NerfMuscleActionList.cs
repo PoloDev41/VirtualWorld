@@ -26,6 +26,7 @@ namespace VirtualWorld.World.Actors.Creatures.IA
         public static void RotationIndividu(Monde m, Individu proprietaire, double power, float deltaTime)
         {
             proprietaire.Angle += (float)(power * deltaTime)*5;
+            proprietaire.PointDeVie -= (float)(power * deltaTime * proprietaire.FactorAgrandissement);
         }
 
         public static void WalkRight(Monde m, Individu proprietaire, double power, float deltaTime)
@@ -34,6 +35,7 @@ namespace VirtualWorld.World.Actors.Creatures.IA
             double moveX = distanceX * Math.Cos(proprietaire.Angle);
             double moveY = distanceX * Math.Sin(proprietaire.Angle);
 
+            proprietaire.PointDeVie -= (float)(power * deltaTime * proprietaire.FactorAgrandissement * 2);
             proprietaire.Position += new Microsoft.Xna.Framework.Vector2((float)moveX, (float)moveY);
         }
 

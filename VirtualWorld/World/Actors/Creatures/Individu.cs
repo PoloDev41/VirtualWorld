@@ -32,11 +32,15 @@ namespace VirtualWorld
         /// </summary>
         public Brain Intelligence { get; set; }
 
+        public float SeuilEgg { get; set; }
+
+        public float TempsEgg { get; internal set; }
+
         #region Optimize
 
         public Fruit NearestFruit_Opti { get; set; }
-        public float TempsEgg { get; internal set; }
-
+        public int LastTimeToComputeFruit_Opti { get; set; }
+        
         #endregion
 
         public Individu(Vector2 pos, Monde m)
@@ -46,6 +50,7 @@ namespace VirtualWorld
             ComputeRender();
             this.PointDeVieDemarrage *= 10;
             this.PointDeVie = this.PointDeVieDemarrage;
+            this.SeuilEgg = this.PointDeVieDemarrage;
         }
 
         public Individu Clone(Monde m)
@@ -56,6 +61,7 @@ namespace VirtualWorld
             clone.Intelligence = this.Intelligence.Clone();
             clone.TempsEgg = this.TempsEgg * ((float)Monde.rand.Next(90, 111) / 100f);
             clone.FactorAgrandissement = this.FactorAgrandissement * ((float)Monde.rand.Next(90, 111) / 100f);
+            clone.SeuilEgg = clone.PointDeVieDemarrage;
             return clone;
         }
 
@@ -64,7 +70,6 @@ namespace VirtualWorld
             Parallel.ForEach(this.Intelligence.Neurones, x => x.UpdateAsynch(monde, this, deltaTime));
 
             base.UpdateAsynch(deltaTime, monde);
-            this.PointDeVie -= this.Intelligence.Neurones.Length/3;
         }
 
         public override void UpdateSynch(float deltaTime, Monde monde)
@@ -76,13 +81,20 @@ namespace VirtualWorld
 
             NerfMuscleActionList.EatNearestFruit(monde, this, 1, deltaTime);
 
-            if(this.PointDeVie >= this.PointDeVieDemarrage*2)
+            if(this.PointDeVie >= this.SeuilEgg)
             {
-                this.PointDeVie -= this.PointDeVieDemarrage;
+                this.SeuilEgg *= 1.5f;
+                this.PointDeVie -= this.PointDeVieDemarrage * 1.1f;
                 monde.Eggs.Add(new World.Actors.Egg(this.Clone(monde), monde));
             }
 
-            NearestFruit_Opti = null;
+            LastTimeToComputeFruit_Opti--;
+            if(LastTimeToComputeFruit_Opti == 0 || NearestFruit_Opti.Mort == true)
+            {
+                NearestFruit_Opti = null;
+                LastTimeToComputeFruit_Opti = 1;
+            }
+            
         }
 
         private void RefreshPosition(Monde monde)
