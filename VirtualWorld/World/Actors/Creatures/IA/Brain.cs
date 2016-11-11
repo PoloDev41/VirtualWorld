@@ -22,5 +22,17 @@ namespace VirtualWorld.World.Actors.Creature.IA
         public Brain()
         {
         }
+
+        public Brain Clone()
+        {
+            Brain clone = new Brain();
+            clone.Neurones = new StemCell[this.Neurones.Length];
+            for (int i = 0; i < clone.Neurones.Length; i++)
+            {
+                clone.Neurones[i] = this.Neurones[i].Clone();
+            }
+
+            return clone;
+        }
     }
 }

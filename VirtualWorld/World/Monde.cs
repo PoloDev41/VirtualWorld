@@ -9,6 +9,7 @@ using VirtualWorld.World;
 using Microsoft.Xna.Framework.Content;
 using MonoGameConsole;
 using System.Threading.Tasks;
+using VirtualWorld.World.Actors;
 
 namespace VirtualWorld
 {
@@ -37,6 +38,7 @@ namespace VirtualWorld
 
         public static readonly int TimeSeason = 10;
         public static readonly int TimeInterSeason = 30;
+        public static Random rand = new Random();
 
         private ViewType _view = ViewType.NORMAL;
         private float _timeSaison = TimeSeason;
@@ -74,6 +76,11 @@ namespace VirtualWorld
         /// list des graines
         /// </summary>
         public List<Graine> Graines { get; set; }
+
+        /// <summary>
+        /// list of eggs
+        /// </summary>
+        public List<Egg> Eggs { get; set; }
 
         /// <summary>
         /// parcelle de terrain du monde
@@ -249,6 +256,7 @@ namespace VirtualWorld
             Plantes = Factory.AddPlantes(this, 5);
             Fruits = Factory.AddFruits(this, 100);
             Individus = Factory.AddIndividus(this, 10);
+            Eggs = Factory.AddEggs(this, 10);
             this.Graines = new List<Graine>();
         }
 
@@ -267,7 +275,9 @@ namespace VirtualWorld
 
             Graine.GraineSol = content.Load<Texture2D>("Images//graine");
 
-            Individu.IndividuTexture = content.Load<Texture2D>("Images//indi.png");
+            Individu.IndividuTexture = content.Load<Texture2D>("Images//indi");
+
+            Egg.EggGround = content.Load<Texture2D>("Images//oeuf");
         }
 
         public void Update(float deltaTime)
@@ -333,11 +343,17 @@ namespace VirtualWorld
                 Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
             });
 
+            Task tEggs = Task.Factory.StartNew(() =>
+            {
+                Parallel.ForEach(Eggs, x => x.UpdateAsynch(deltaTime, this));
+            });
+
             tFruits.Wait();
             tGraine.Wait();
             tParcelle.Wait();
             tPlante.Wait();
             tIndividu.Wait();
+            tEggs.Wait();
 
             for (int i = this.Plantes.Count - 1; i >= 0; i--)
             {
@@ -355,7 +371,7 @@ namespace VirtualWorld
             {
                 if (this.Fruits[i].Mort == true)
                 {
-                    if(this.Fruits[i].Plante != null)
+                    if(this.Fruits[i].Plante != null && rand.Next(0,101) < this.Fruits[i].LuckGraine)
                     {
                         this.Graines.Add(new Graine(this.Fruits[i].Plante, this.Fruits[i].Position, this));
                     }
@@ -385,6 +401,15 @@ namespace VirtualWorld
                     this.Individus[i].UpdateSynch(deltaTime, this);
                 }
             }
+
+            for (int i = this.Eggs.Count - 1; i >= 0; i--)
+            {
+                if(this.Eggs[i].Mort == true)
+                {
+                    this.Individus.Add(this.Eggs[i].RefIndividu);
+                    this.Eggs.RemoveAt(i);
+                }
+            }
         }
 
         public void DrawActors(SpriteBatch spriteBatch)
@@ -392,7 +417,9 @@ namespace VirtualWorld
             DrawGraines(spriteBatch);
             DrawFruits(spriteBatch);
             DrawPlante(spriteBatch);
+            DrawEggs(spriteBatch);
             DrawIndividus(spriteBatch);
+
         }
 
         private void DrawIndividus(SpriteBatch spriteBatch)
@@ -478,6 +505,16 @@ namespace VirtualWorld
                                    SpriteEffects.None, 0f);
             }
         }
+
+        private void DrawEggs(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < this.Eggs.Count; i++)
+            {
+                spriteBatch.Draw(Egg.EggGround, this.Eggs[i].PositionImage, null, Color.White, 0f, Vector2.Zero, this.Eggs[i].FactorAgrandissement,
+                                   SpriteEffects.None, 0f);
+            }
+        }
+
 
         public void DrawGround(SpriteBatch spriteBatch)
         {

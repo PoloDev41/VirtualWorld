@@ -20,6 +20,14 @@ namespace VirtualWorld.World.Actors.Creature
         /// weight of the synapse
         /// </summary>
         public double Weight { get; set; }
+
+        internal Synapse Clone()
+        {
+            Synapse clone = new Synapse();
+            clone.IndexNeurone = this.IndexNeurone;
+            clone.Weight = Weight;
+            return clone;
+        }
     }
 
     /// <summary>
@@ -38,6 +46,11 @@ namespace VirtualWorld.World.Actors.Creature
         {
             this.Output = this.NewOutput;
         }
+
+        public virtual StemCell Clone()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Nerf: StemCell
@@ -48,6 +61,13 @@ namespace VirtualWorld.World.Actors.Creature
         {
             base.UpdateAsynch(m, proprietaire, deltaTime);
             this.NewOutput = this.Process(m, proprietaire);
+        }
+
+        public override StemCell Clone()
+        {
+            Nerf clone = new Nerf();
+            clone.Process = this.Process;
+            return clone;
         }
     }
 
@@ -66,6 +86,19 @@ namespace VirtualWorld.World.Actors.Creature
         public double Biais { get; set; }
         public Synapse[] Synapses { get; set; }
         public NerfMuscleAction ActionMuscle { get; set; }
+
+        public override StemCell Clone()
+        {
+            Neurone clone = new Neurone();
+            clone.Biais = this.Biais;
+            clone.ActionMuscle = this.ActionMuscle;
+            clone.Synapses = new Synapse[this.Synapses.Length];
+            for (int i = 0; i < clone.Synapses.Length; i++)
+            {
+                clone.Synapses[i] = this.Synapses[i].Clone();
+            }
+            return clone;
+        }
 
         public override void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {

@@ -167,6 +167,8 @@ namespace VirtualWorld
             yPosition += 20;
             spriteBatch.DrawString(Font, "Individus: " + _monde.Individus.Count.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;
+            spriteBatch.DrawString(Font, "Eggs: " + _monde.Eggs.Count.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
 
             if (this.GameOnPause)
                 spriteBatch.DrawString(Font, "PAUSE", new Vector2(20, yPosition), Color.Black);
