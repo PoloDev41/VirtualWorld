@@ -150,6 +150,54 @@ namespace VirtualWorld
             //this.CreateWorld(sizeX, sizeY);
         }
 
+        /// <summary>
+        /// return the list of parcelle which represents the perimeter of a square
+        /// </summary>
+        /// <param name="pos">position of the square (parcelle index)</param>
+        /// <param name="radius">radius of the square</param>
+        /// <returns>list of parcelle</returns>
+        public List<ParcelleTerrain> GetParcellePerimeter(Vector2 pos, int radius)
+        {
+            List<ParcelleTerrain> list = new List<ParcelleTerrain>();
+            for (int i = (int)pos.X - radius; i <= (int)pos.X + radius; i++)
+            {
+                int j = (int)(pos.Y - radius);
+                if(i >= 0 && i < this.Parcelles.Length &&
+                    j >= 0 && j < this.Parcelles[i].Length)
+                {
+                    list.Add(this.Parcelles[i][j]);
+                }
+            }
+            for (int i = (int)pos.X - radius; i <= (int)pos.X + radius; i++)
+            {
+                int j = (int)(pos.Y + radius);
+                if (i >= 0 && i < this.Parcelles.Length &&
+                    j >= 0 && j < this.Parcelles[i].Length)
+                {
+                    list.Add(this.Parcelles[i][j]);
+                }
+            }
+            for (int j = (int)pos.Y - radius+1; j <= (int)pos.Y + radius-1; j++)
+            {
+                int i = (int)(pos.X + radius);
+                if (i >= 0 && i < this.Parcelles.Length &&
+                    j >= 0 && j < this.Parcelles[i].Length)
+                {
+                    list.Add(this.Parcelles[i][j]);
+                }
+            }
+            for (int j = (int)pos.Y - radius + 1; j <= (int)pos.Y + radius - 1; j++)
+            {
+                int i = (int)(pos.X - radius);
+                if (i >= 0 && i < this.Parcelles.Length &&
+                    j >= 0 && j < this.Parcelles[i].Length)
+                {
+                    list.Add(this.Parcelles[i][j]);
+                }
+            }
+            return list;
+        }
+
         public void CreateWorld(int sizex, int sizey)
         {
             _timeSaison = 10;
@@ -199,7 +247,8 @@ namespace VirtualWorld
             }
 
             Plantes = Factory.AddPlantes(this, 5);
-            Fruits = Factory.AddFruits(this, 10);
+            Fruits = Factory.AddFruits(this, 100);
+            Individus = Factory.AddIndividus(this, 10);
             this.Graines = new List<Graine>();
         }
 
@@ -217,11 +266,13 @@ namespace VirtualWorld
             Fruit.Pomme = content.Load<Texture2D>("Images//pomme");
 
             Graine.GraineSol = content.Load<Texture2D>("Images//graine");
+
+            Individu.IndividuTexture = content.Load<Texture2D>("Images//indi.png");
         }
 
         public void Update(float deltaTime)
         {
-            if(this.Plantes.Count == 0)
+            if(this.Plantes.Count == 0 || this.Individus.Count == 0)
             {
                 this.CreateWorld(this.Parcelles.Length, this.Parcelles[0].Length);
                 return;
@@ -277,11 +328,16 @@ namespace VirtualWorld
                 Parallel.ForEach(Graines, x => x.UpdateAsynch(deltaTime, this));
             });
 
+            Task tIndividu = Task.Factory.StartNew(() =>
+            {
+                Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
+            });
+
             tFruits.Wait();
             tGraine.Wait();
             tParcelle.Wait();
             tPlante.Wait();
-            
+            tIndividu.Wait();
 
             for (int i = this.Plantes.Count - 1; i >= 0; i--)
             {
@@ -317,6 +373,18 @@ namespace VirtualWorld
                     this.Graines.RemoveAt(i);
                 }
             }
+
+            for (int i = this.Individus.Count - 1; i >= 0; i--)
+            {
+                if(this.Individus[i].Mort == true)
+                {
+                    this.Individus.RemoveAt(i);
+                }
+                else
+                {
+                    this.Individus[i].UpdateSynch(deltaTime, this);
+                }
+            }
         }
 
         public void DrawActors(SpriteBatch spriteBatch)
@@ -324,6 +392,19 @@ namespace VirtualWorld
             DrawGraines(spriteBatch);
             DrawFruits(spriteBatch);
             DrawPlante(spriteBatch);
+            DrawIndividus(spriteBatch);
+        }
+
+        private void DrawIndividus(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < this.Individus.Count; i++)
+            {
+                spriteBatch.Draw(this.Individus[i].PictureUsed,
+                                this.Individus[i].PositionImage, null, Color.White,(float) (this.Individus[i].Angle + Math.PI/2),
+                                new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
+                                this.Individus[i].FactorAgrandissement,
+                                   SpriteEffects.None, 0f);
+            }
         }
 
         private void DrawGraines(SpriteBatch spriteBatch)

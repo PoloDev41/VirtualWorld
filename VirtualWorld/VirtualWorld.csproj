@@ -42,12 +42,16 @@
     <Compile Include="Camera2D.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="IRender.cs" />
+    <Compile Include="World\Actors\Creatures\IA\NerfMuscleActionList.cs" />
+    <Compile Include="World\Actors\Creatures\IA\NerfSensorList.cs" />
     <Compile Include="World\Actors\EtreVivant.cs" />
     <Compile Include="World\Actors\Fruit.cs" />
     <Compile Include="World\Actors\Graine.cs" />
+    <Compile Include="World\Actors\Creatures\IA\Brain.cs" />
+    <Compile Include="World\Actors\Creatures\IA\Neurone.cs" />
     <Compile Include="World\Actors\Plante.cs" />
     <Compile Include="World\Generation\Factory.cs" />
-    <Compile Include="World\Actors\Individu\Individu.cs" />
+    <Compile Include="World\Actors\Creatures\Individu.cs" />
     <Compile Include="World\Monde.cs" />
     <Compile Include="World\ParcelleTerrain.cs" />
     <Compile Include="Program.cs" />

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace VirtualWorld
     public abstract class EtreVivant
     {
         public static Random rand = new Random();
+
+        /// <summary>
+        /// Picture used to draw
+        /// </summary>
+        public Texture2D PictureUsed { get; set; }
 
         /// <summary>
         /// position de l'etre vivant
@@ -96,6 +102,13 @@ namespace VirtualWorld
         {
             int t = (int)(this.PointDeVieDemarrage * 0.1f);
             this.PointDeVieDemarrage += (float)(rand.Next(-t, t + 1) * rand.NextDouble());
+        }
+
+        public virtual float TakeLife(float factor)
+        {
+            float take = Math.Min(this.PointDeVie, this.PointDeVie * factor);
+            this.PointDeVie -= take;
+            return take;
         }
 
         public virtual void UpdateSynch(float deltaTime, Monde monde) { }

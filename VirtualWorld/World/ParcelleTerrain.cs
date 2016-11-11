@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,11 @@ namespace VirtualWorld
         public static Texture2D ParcelleEauPeuProfonde;
         public static Texture2D ParcelleEauProfonde;
         public static Texture2D Blanc;
+
+        public static ParcelleTerrain TransformPixelToParcelle(Monde m, Vector2 posPx)
+        {
+            return m.Parcelles[(int)posPx.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX][(int)posPx.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX];
+        }
 
         private float _Engrais;
 
@@ -67,6 +73,10 @@ namespace VirtualWorld
 
             set;
         }
+        /// <summary>
+        /// lsit of fruit on this parcelle
+        /// </summary>
+        public List<Fruit> RefFruits { get; set; } = new List<Fruit>();
 
         public void UpdateAsynch(float deltaTime, Monde monde)
         {
@@ -84,6 +94,22 @@ namespace VirtualWorld
                     break;
             }
             this.Engrais += 100 * deltaTime;
+            for (int i = this.RefFruits.Count - 1; i >= 0; i--)
+            {
+                if(this.RefFruits[i].Mort == true)
+                {
+                    this.RefFruits.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// add a fruit as a reference
+        /// </summary>
+        /// <param name="reff">referenced fruit</param>
+        public void AddFruit(Fruit reff)
+        {
+            this.RefFruits.Add(reff);
         }
 
         public float RemoveEngrais(float wish)
