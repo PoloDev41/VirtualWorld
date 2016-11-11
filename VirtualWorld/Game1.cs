@@ -156,15 +156,22 @@ namespace VirtualWorld
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString(), new Vector2(20, 20), Color.Black);
-            spriteBatch.DrawString(Font, "Plantes: " + _monde.Plantes.Count.ToString(), new Vector2(20, 40), Color.Black);
-            spriteBatch.DrawString(Font, "Graines: " + _monde.Graines.Count.ToString(), new Vector2(20, 60), Color.Black);
-            spriteBatch.DrawString(Font, "Fruits: " + _monde.Fruits.Count.ToString(), new Vector2(20, 80), Color.Black);
+            int yPosition = 20;
+            spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            spriteBatch.DrawString(Font, "Plantes: " + _monde.Plantes.Count.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            spriteBatch.DrawString(Font, "Graines: " + _monde.Graines.Count.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            spriteBatch.DrawString(Font, "Fruits: " + _monde.Fruits.Count.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            spriteBatch.DrawString(Font, "Individus: " + _monde.Individus.Count.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
 
-            if(this.GameOnPause)
-                spriteBatch.DrawString(Font, "PAUSE", new Vector2(20, 100), Color.Black);
+            if (this.GameOnPause)
+                spriteBatch.DrawString(Font, "PAUSE", new Vector2(20, yPosition), Color.Black);
             else
-                spriteBatch.DrawString(Font, "Game speed: " + this._speedMultiplier, new Vector2(20, 100), Color.Black);
+                spriteBatch.DrawString(Font, "Game speed: " + this._speedMultiplier, new Vector2(20, yPosition), Color.Black);
 
 
             spriteBatch.End();

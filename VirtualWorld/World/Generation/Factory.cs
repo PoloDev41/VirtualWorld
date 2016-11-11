@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualWorld.World.Actors.Creature;
+using VirtualWorld.World.Actors.Creature.IA;
+using VirtualWorld.World.Actors.Creatures.IA;
 
 namespace VirtualWorld.World
 {
@@ -10,6 +13,12 @@ namespace VirtualWorld.World
     {
         static Random rand = new Random();
 
+        /// <summary>
+        /// Create a list a plante ready to be added into the world
+        /// </summary>
+        /// <param name="m">world</param>
+        /// <param name="number">number of plante to add</param>
+        /// <returns>list of plante</returns>
         public static List<Plante> AddPlantes(Monde m, int number)
         {
             List<Plante> list = new List<Plante>();
@@ -42,6 +51,62 @@ namespace VirtualWorld.World
             p.AltitudeIdeal = pt.Altitude;
 
             return p;
+        }
+
+        private static Individu CreateIndividu(float x, float y, Monde m)
+        {
+            Individu ind = new Individu(new Microsoft.Xna.Framework.Vector2(x, y), m);
+
+            Brain b = new Brain();
+            b.Neurones = new Actors.Creature.StemCell[]
+            {
+                new Actors.Creature.Nerf()
+                {
+                    Process = NerfSensorList.AngleNearestFruit
+                },
+                new Actors.Creature.Neurone()
+                {
+                    Synapses = new Actors.Creature.Synapse[]
+                    {
+                        new Actors.Creature.Synapse()
+                        {
+                            IndexNeurone = 0,
+                            Weight = Neurone.GenerateNewWeight()
+                        }
+                    },
+                    ActionMuscle = NerfMuscleActionList.RotationIndividu
+                },
+                new Actors.Creature.Neurone()
+                {
+                    Synapses = new Actors.Creature.Synapse[]
+                    {
+                        new Actors.Creature.Synapse()
+                        {
+                            IndexNeurone = 2,
+                            Weight = Neurone.GenerateNewWeight()
+                        }
+                    },
+                    ActionMuscle = NerfMuscleActionList.WalkRight,
+                    Output = 1
+                }
+            };
+            ind.Intelligence = b;
+            return ind;
+        }
+
+        public static List<Individu> AddIndividus(Monde m, int number)
+        {
+            List<Individu> list = new List<Individu>();
+            for (int i = 0; i < number; i++)
+            {
+                float x = rand.Next(0, (int)m.TaillePx.X);
+                float y = rand.Next(0, (int)m.TaillePx.Y);
+
+                Individu ind = CreateIndividu(x, y, m);
+                list.Add(ind);
+            }
+
+            return list;
         }
 
         public static ParcelleTerrain[][] GenerateGround(int sizex, int sizey)

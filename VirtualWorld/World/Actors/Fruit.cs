@@ -27,6 +27,7 @@ namespace VirtualWorld
             this.PointDeVie = 200;
             this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_POMME_LARGEUR_PX * this.FactorAgrandissement / 2,
                 this.Position.Y - TAILLE_IMAGE_POMME_HAUTEUR_PX * this.FactorAgrandissement / 2);
+            ParcelleTerrain.TransformPixelToParcelle(m, this.Position).AddFruit(this);
         }
 
         public Fruit(Vector2 pos, Plante plante, Monde m):
@@ -38,6 +39,7 @@ namespace VirtualWorld
             this.PositionImage = new Vector2(x,y);
             this.PointDeVie = this.PointDeVieDemarrage;
             this.Plante = new Plante(plante, pos, m);
+            ParcelleTerrain.TransformPixelToParcelle(m, this.Position).AddFruit(this);
         }
 
     }

@@ -16,6 +16,9 @@ namespace VirtualWorld
 
         public List<ParcelleTerrain> TerreProche { get; set; }
 
+        /// <summary>
+        /// More is this variable more the tree grow quickly
+        /// </summary>
         public float BienEtre { get; set; }
 
         public float TemperatureIdeal { get; set; }
@@ -25,8 +28,6 @@ namespace VirtualWorld
 
         public float TempsGraine { get; set; }
 
-        public Texture2D PictureUsed { get; set; }
-        
         public Plante(Vector2 pos, Monde m):
             base(pos, m)
         {
@@ -60,7 +61,7 @@ namespace VirtualWorld
             this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement / 2, this.Position.Y - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement);
             TemperatureIdeal = rand.Next((int)Math.Round(m.TemperatureMin),
                                             (int)Math.Round(m.TemperatureMax)) + (float)rand.NextDouble();
-            this.RefParcelle = m.Parcelles[(int)this.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX][(int)this.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX];
+            this.RefParcelle = ParcelleTerrain.TransformPixelToParcelle(m, this.Position);
             this.BienEtre = 0;
         }
 
