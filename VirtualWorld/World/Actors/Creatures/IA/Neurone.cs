@@ -32,7 +32,6 @@ namespace VirtualWorld.World.Actors.Creature
 
         public virtual void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {
-            proprietaire.PointDeVie--;
         }
 
         public virtual void UpdateSynch(Monde m, Individu proprietaire, float deltaTime)

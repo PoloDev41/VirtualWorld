@@ -10,8 +10,22 @@ namespace VirtualWorld.World.Actors.Creatures.IA
 {
     public static class NerfSensorList
     {
-        private static Fruit FindNearestFruit(Monde m, Individu proprietaire)
+        public static bool IsCloosed(EtreVivant ev1, EtreVivant ev2)
         {
+            float dist = Vector2.Distance(ev1.Position, ev2.Position);
+
+            if(dist < (10*ev1.FactorAgrandissement*ev2.FactorAgrandissement))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static Fruit FindNearestFruit(Monde m, Individu proprietaire)
+        {
+            if (proprietaire.NearestFruit_Opti != null)
+                return proprietaire.NearestFruit_Opti;
+
             Vector2 posParcelle = new Vector2((int)proprietaire.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX,
                                             (int)proprietaire.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX);
             double distanceNearestFruit = double.MaxValue;
@@ -48,6 +62,7 @@ namespace VirtualWorld.World.Actors.Creatures.IA
                     }
                     else
                     {
+                        proprietaire.NearestFruit_Opti = refFruit;
                         return refFruit;
                     }
                 }

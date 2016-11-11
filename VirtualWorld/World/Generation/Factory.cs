@@ -71,7 +71,7 @@ namespace VirtualWorld.World
                         new Actors.Creature.Synapse()
                         {
                             IndexNeurone = 0,
-                            Weight = 10//Neurone.GenerateNewWeight()
+                            Weight = Neurone.GenerateNewWeight()
                         }
                     },
                     ActionMuscle = NerfMuscleActionList.RotationIndividu
@@ -83,7 +83,7 @@ namespace VirtualWorld.World
                         new Actors.Creature.Synapse()
                         {
                             IndexNeurone = 2,
-                            Weight = 10//Neurone.GenerateNewWeight()
+                            Weight = Neurone.GenerateNewWeight()
                         }
                     },
                     ActionMuscle = NerfMuscleActionList.WalkRight,

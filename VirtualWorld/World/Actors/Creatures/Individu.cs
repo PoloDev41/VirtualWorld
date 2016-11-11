@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VirtualWorld.World.Actors.Creature.IA;
+using VirtualWorld.World.Actors.Creatures.IA;
 
 namespace VirtualWorld
 {
@@ -29,6 +30,12 @@ namespace VirtualWorld
         /// </summary>
         public Brain Intelligence { get; set; }
 
+        #region Optimize
+
+        public Fruit NearestFruit_Opti { get; set; }
+
+        #endregion
+
         public Individu(Vector2 pos, Monde m)
             :base(pos, m)
         {
@@ -42,6 +49,7 @@ namespace VirtualWorld
             Parallel.ForEach(this.Intelligence.Neurones, x => x.UpdateAsynch(monde, this, deltaTime));
 
             base.UpdateAsynch(deltaTime, monde);
+            this.PointDeVie -= this.Intelligence.Neurones.Length/3;
         }
 
         public override void UpdateSynch(float deltaTime, Monde monde)
@@ -50,6 +58,10 @@ namespace VirtualWorld
 
             base.UpdateSynch(deltaTime, monde);
             RefreshPositionImage();
+
+            NerfMuscleActionList.EatNearestFruit(monde, this, 1, deltaTime);
+
+            NearestFruit_Opti = null;
         }
 
         private void RefreshPositionImage()

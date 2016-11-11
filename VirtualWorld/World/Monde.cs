@@ -248,7 +248,7 @@ namespace VirtualWorld
 
             Plantes = Factory.AddPlantes(this, 5);
             Fruits = Factory.AddFruits(this, 100);
-            Individus = Factory.AddIndividus(this, 1);
+            Individus = Factory.AddIndividus(this, 10);
             this.Graines = new List<Graine>();
         }
 
@@ -402,7 +402,7 @@ namespace VirtualWorld
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
                                 this.Individus[i].PositionImage, null, Color.White,(float) (this.Individus[i].Angle + Math.PI/2),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
-                                this.Individus[i].FactorAgrandissement*10,
+                                this.Individus[i].FactorAgrandissement,
                                    SpriteEffects.None, 0f);
             }
         }

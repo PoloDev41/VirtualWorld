@@ -104,6 +104,13 @@ namespace VirtualWorld
             this.PointDeVieDemarrage += (float)(rand.Next(-t, t + 1) * rand.NextDouble());
         }
 
+        public virtual float TakeLife(float factor)
+        {
+            float take = Math.Min(this.PointDeVie, this.PointDeVie * factor);
+            this.PointDeVie -= take;
+            return take;
+        }
+
         public virtual void UpdateSynch(float deltaTime, Monde monde) { }
 
         public virtual void UpdateAsynch(float deltaTime, Monde monde)

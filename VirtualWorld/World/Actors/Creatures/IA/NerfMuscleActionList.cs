@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +10,21 @@ namespace VirtualWorld.World.Actors.Creatures.IA
 {
     public static class NerfMuscleActionList
     {
+        public static void EatNearestFruit(Monde m, Individu proprietaire, double power, float deltaTime)
+        {
+            Fruit nearest = NerfSensorList.FindNearestFruit(m, proprietaire);
+
+            if(nearest != null && NerfSensorList.IsCloosed(nearest, proprietaire) == true)
+            {
+                proprietaire.PointDeVie += nearest.TakeLife(proprietaire.FactorAgrandissement / (nearest.FactorAgrandissement * 2)
+                                            * (float)power * deltaTime * 100)*2; //*100 to compense deltaTime
+            }
+
+        }
+
         public static void RotationIndividu(Monde m, Individu proprietaire, double power, float deltaTime)
         {
-            proprietaire.Angle += (float)(power * deltaTime);
-            /*if (proprietaire.Angle > Math.PI)
-                proprietaire.Angle -= (float)(Math.PI * 2);
-            if (proprietaire.Angle < -Math.PI)
-                proprietaire.Angle += (float)(Math.PI * 2);*/
-
-            //proprietaire.Angle = (float)(proprietaire.Angle % Math.PI*2);
+            proprietaire.Angle += (float)(power * deltaTime)*5;
         }
 
         public static void WalkRight(Monde m, Individu proprietaire, double power, float deltaTime)
@@ -32,7 +39,8 @@ namespace VirtualWorld.World.Actors.Creatures.IA
         public static NerfMuscleAction[] MuscleActionStock = new NerfMuscleAction[]
         {
             (NerfMuscleAction)RotationIndividu,
-            WalkRight
+            WalkRight,
+            EatNearestFruit
         };
     }
 }
