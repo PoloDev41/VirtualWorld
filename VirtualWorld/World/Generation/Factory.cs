@@ -50,7 +50,6 @@ namespace VirtualWorld.World
             p.PointDeVieDemarrage = p.PointDeVie = rand.Next(_ten, ten) + (float)rand.NextDouble();
             p.TempsGraine = (float)(rand.Next(4, 6) + rand.NextDouble());
             p.AltitudeIdeal = pt.Altitude;
-
             return p;
         }
 

@@ -253,11 +253,48 @@ namespace VirtualWorld
                 }
             }
 
+            Plantes = new List<Plante>();
+            Fruits = new List<Fruit>();
+            Individus = new List<Individu>();
+            Eggs = new List<Egg>();
+            Graines = new List<Graine>();
+
             Plantes = Factory.AddPlantes(this, 5);
             Fruits = Factory.AddFruits(this, 100);
             Individus = Factory.AddIndividus(this, 10);
             Eggs = Factory.AddEggs(this, 10);
             this.Graines = new List<Graine>();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Task tParcelle = Task.Factory.StartNew(() => {
+                    foreach (var item in this.Parcelles)
+                    {
+                        Parallel.ForEach(item, x => x.UpdateAsynch((float)rand.NextDouble(), this));
+                    }
+                });
+
+                Task tPlante = Task.Factory.StartNew(() =>
+                {
+                    Parallel.ForEach(Plantes, x => x.UpdateAsynch((float)rand.NextDouble(), this));
+                });
+                tParcelle.Wait();
+                tPlante.Wait();
+
+                for (int j = this.Plantes.Count - 1; j >= 0; j--)
+                {
+                    if (this.Plantes[j].Mort == true)
+                    {
+                        this.Plantes.RemoveAt(j);
+                    }
+                    else
+                    {
+                        this.Plantes[j].UpdateSynch((float)rand.NextDouble(), this);
+                    }
+                }
+            }
+
+            Plantes.AddRange(Factory.AddPlantes(this, 5));
         }
 
         internal void LoadContent(ContentManager content)
@@ -429,7 +466,7 @@ namespace VirtualWorld
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
                                 this.Individus[i].PositionImage, null, Color.White,(float) (this.Individus[i].Angle + Math.PI/2),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
-                                this.Individus[i].FactorAgrandissement,
+                                Math.Max(0.1f, this.Individus[i].FactorAgrandissement),
                                    SpriteEffects.None, 0f);
             }
         }

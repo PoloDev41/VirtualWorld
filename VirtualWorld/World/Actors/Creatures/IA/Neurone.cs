@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VirtualWorld;
+using VirtualWorld.World.Actors.Creatures.IA;
 
 namespace VirtualWorld.World.Actors.Creature
 {
@@ -25,7 +26,7 @@ namespace VirtualWorld.World.Actors.Creature
         {
             Synapse clone = new Synapse();
             clone.IndexNeurone = this.IndexNeurone;
-            clone.Weight = Weight;
+            clone.Weight = Weight + StemCell.rand.NextDouble()*2-1;
             return clone;
         }
     }
@@ -35,6 +36,7 @@ namespace VirtualWorld.World.Actors.Creature
     /// </summary>
     public class StemCell
     {
+        public static Random rand = new Random();
         public double Output { get; set; }
         protected double NewOutput { get; set; }
 
@@ -76,7 +78,6 @@ namespace VirtualWorld.World.Actors.Creature
     /// </summary>
     public class Neurone : StemCell
     {
-        private static Random rand = new Random();
 
         public static double GenerateNewWeight()
         {
@@ -90,12 +91,16 @@ namespace VirtualWorld.World.Actors.Creature
         public override StemCell Clone()
         {
             Neurone clone = new Neurone();
-            clone.Biais = this.Biais;
-            clone.ActionMuscle = this.ActionMuscle;
+            clone.Biais = this.Biais + StemCell.rand.NextDouble() * 2 - 1;
+            if (rand.Next(0, 101) > 1)
+                clone.ActionMuscle = this.ActionMuscle;
+            else
+                clone.ActionMuscle = NerfMuscleActionList.GetRandomAction();
             clone.Synapses = new Synapse[this.Synapses.Length];
             for (int i = 0; i < clone.Synapses.Length; i++)
             {
-                clone.Synapses[i] = this.Synapses[i].Clone();
+                Synapse s = this.Synapses[i].Clone();
+                clone.Synapses[i] = s;
             }
             return clone;
         }

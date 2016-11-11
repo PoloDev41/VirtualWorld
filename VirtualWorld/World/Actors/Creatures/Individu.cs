@@ -55,6 +55,7 @@ namespace VirtualWorld
             clone.PointDeVie = this.PointDeVieDemarrage;
             clone.Intelligence = this.Intelligence.Clone();
             clone.TempsEgg = this.TempsEgg * ((float)Monde.rand.Next(90, 111) / 100f);
+            clone.FactorAgrandissement = this.FactorAgrandissement * ((float)Monde.rand.Next(90, 111) / 100f);
             return clone;
         }
 

@@ -48,6 +48,9 @@ namespace VirtualWorld.World.Actors.Creatures.IA
                 {
                     for (int i = 0; i < fruits.Count; i++)
                     {
+                        if (fruits[i] == null)
+                            continue;
+
                         float distance = Vector2.DistanceSquared(proprietaire.Position, fruits[i].Position);
                         if(distance < distanceNearestFruit)
                         {
@@ -85,5 +88,10 @@ namespace VirtualWorld.World.Actors.Creatures.IA
         {
             (NerfSensor)AngleNearestFruit
         };
+
+        public static NerfSensor GetRandomSensor()
+        {
+            return SensorStock[Monde.rand.Next(0, SensorStock.Length)];
+        }
     }
 }

@@ -41,7 +41,12 @@ namespace VirtualWorld.World.Actors.Creatures.IA
         {
             (NerfMuscleAction)RotationIndividu,
             WalkRight,
-            EatNearestFruit
+            //EatNearestFruit
         };
+
+        public static NerfMuscleAction GetRandomAction()
+        {
+            return MuscleActionStock[Monde.rand.Next(0, MuscleActionStock.Length)];
+        }
     }
 }
