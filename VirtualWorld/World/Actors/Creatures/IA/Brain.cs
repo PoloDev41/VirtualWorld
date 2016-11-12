@@ -24,7 +24,7 @@ namespace VirtualWorld.World.Actors.Creature.IA
         {
         }
 
-        private StemCell CreateRandomStemCell()
+        private StemCell CreateRandomStemCell(int nbrStemCell)
         {
             StemCell s = null;
             int r = Monde.rand.Next(0, 101);
@@ -37,13 +37,13 @@ namespace VirtualWorld.World.Actors.Creature.IA
                     n.ActionMuscle = NerfMuscleActionList.GetRandomAction();
                 }
                 n.Biais = Neurone.GenerateNewWeight();
-                int nbrSynapse = Math.Max(1, Monde.rand.Next(this.Neurones.Length+1));
+                int nbrSynapse = Math.Max(1, Monde.rand.Next(nbrStemCell+1));
                 n.Synapses = new Synapse[nbrSynapse];
                 for (int i = 0; i < nbrSynapse; i++)
                 {
                     n.Synapses[i] = new Synapse()
                     {
-                        IndexNeurone = Monde.rand.Next(this.Neurones.Length+1),
+                        IndexNeurone = Monde.rand.Next(nbrStemCell+1),
                         Weight = Neurone.GenerateNewWeight()
                     };
                 }
@@ -68,22 +68,38 @@ namespace VirtualWorld.World.Actors.Creature.IA
                 StemCell s = this.Neurones[i].Clone();
                 if(s is Neurone)
                 {
-                    Neurone n = (Neurone)s;
-                    for (int j = 0; j < n.Synapses.Length; j++)
-                    {
-                        if(Monde.rand.Next(0, 101) < 2)
-                        {
-                            n.Synapses[j].IndexNeurone = Monde.rand.Next(0, n.Synapses.Length);
-                        }
-                    }
                 }
                 tmp.Add(s);
             }
-            if(Monde.rand.Next(0,101) < 2)
+            if(Monde.rand.Next(0, 101) < 2)
             {
-                StemCell s = CreateRandomStemCell();
+                int indexToRemove = Monde.rand.Next(0, tmp.Count);
+                tmp.RemoveAt(indexToRemove);
+                for (int i = 0; i < tmp.Count; i++)
+                {
+                    if(tmp[i] is Neurone)
+                    {
+                        Neurone n = (Neurone)tmp[i];
+                        for (int j = 0; j < n.Synapses.Length; j++)
+                        {
+                            if (n.Synapses[j].IndexNeurone > indexToRemove)
+                            {
+                                n.Synapses[j].IndexNeurone--;
+                            }
+                            else
+                            {
+                                n.Synapses[j].IndexNeurone = -1;
+                            }
+                        }
+                    }
+                }
+            }
+            if (Monde.rand.Next(0,101) < 2)
+            {
+                StemCell s = CreateRandomStemCell(tmp.Count);
                 tmp.Add(s);
             }
+
             clone.Neurones = tmp.ToArray();
 
             return clone;

@@ -94,10 +94,7 @@ namespace VirtualWorld.World.Actors.Creature
         {
             Neurone clone = new Neurone();
             clone.Biais = this.Biais + StemCell.rand.NextDouble() * 2 - 1;
-            if (rand.Next(0, 101) > 1)
-                clone.ActionMuscle = this.ActionMuscle;
-            else
-                clone.ActionMuscle = NerfMuscleActionList.GetRandomAction();
+            clone.ActionMuscle = this.ActionMuscle;
             clone.Synapses = new Synapse[this.Synapses.Length];
             for (int i = 0; i < clone.Synapses.Length; i++)
             {
@@ -114,7 +111,8 @@ namespace VirtualWorld.World.Actors.Creature
             double sum = Biais;
             for (int i = 0; i < this.Synapses.Length; i++)
             {
-                sum += proprietaire.Intelligence.Neurones[this.Synapses[i].IndexNeurone].Output * this.Synapses[i].Weight;
+                if(this.Synapses[i].IndexNeurone != -1)
+                    sum += proprietaire.Intelligence.Neurones[this.Synapses[i].IndexNeurone].Output * this.Synapses[i].Weight;
             }
             this.NewOutput = SigmoideFct(sum);
         }

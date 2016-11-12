@@ -341,6 +341,7 @@ namespace VirtualWorld
             Egg.EggGround = content.Load<Texture2D>("Images//oeuf");
         }
 
+        private int _moduloParcelle = 0;
         public void Update(float deltaTime)
         {
             if(this.Plantes.Count == 0 || this.Individus.Count == 0)
@@ -379,10 +380,21 @@ namespace VirtualWorld
             HandleGlobalWarming(deltaTime);
 
             Task tParcelle = Task.Factory.StartNew(() => {
-                foreach (var item in this.Parcelles)
+                for (int i = 0; i < Parcelles.Length; i+=2)
                 {
-                    Parallel.ForEach(item, x => x.UpdateAsynch(deltaTime, this));
+                    if(_moduloParcelle == 0)
+                    {
+                        Parallel.ForEach(Parcelles[i], x => x.UpdateAsynch(deltaTime*2, this));
+                    }
+                    else
+                    {
+                        Parallel.ForEach(Parcelles[i+1], x => x.UpdateAsynch(deltaTime*2, this));
+                    }
                 }
+                if (_moduloParcelle == 0)
+                    _moduloParcelle++;
+                else
+                    _moduloParcelle = 0;
             });
 
             Task tPlante = Task.Factory.StartNew(() =>

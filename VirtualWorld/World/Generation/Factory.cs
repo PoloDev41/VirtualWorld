@@ -133,8 +133,8 @@ namespace VirtualWorld.World
             int increaseY = sizey + 10;
             
             float[][] altitude = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_ALTITUDE, 2, 2);
-            float[][] temperature1 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_ALTITUDE, 2, 3);
-            float[][] temperature2 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_ALTITUDE, 2, 3);
+            float[][] temperature1 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_TEMPERATURE, 2, 3);
+            float[][] temperature2 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_TEMPERATURE, 3, 3);
 
             ParcelleTerrain[][] ground = new ParcelleTerrain[sizex][];
             for (int i = 0; i < ground.Length; i++)
