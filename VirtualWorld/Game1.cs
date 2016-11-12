@@ -60,7 +60,7 @@ namespace VirtualWorld
             Font = Content.Load<SpriteFont>("ConsoleFont");
 
             _monde.LoadContent(Content);
-            _monde.CreateWorld(125, 80);
+            _monde.CreateWorld(100, 70);
             _camera.Position = new Vector2(125 * 9, 80 * 9);
 
             Services.AddService(typeof(SpriteBatch), spriteBatch);
@@ -157,7 +157,12 @@ namespace VirtualWorld
             spriteBatch.Begin();
 
             int yPosition = 20;
-            spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString(), new Vector2(20, yPosition), Color.Black);
+            spriteBatch.DrawString(Font, "Age: " + _monde.Years, new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            if(this._monde.GlobalWarmingAction)
+                spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString() + " global warming !", new Vector2(20, yPosition), Color.Black);
+            else
+                spriteBatch.DrawString(Font, _monde.SaisonCourante.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;
             spriteBatch.DrawString(Font, "Plantes: " + _monde.Plantes.Count.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;
@@ -166,6 +171,8 @@ namespace VirtualWorld
             spriteBatch.DrawString(Font, "Fruits: " + _monde.Fruits.Count.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;
             spriteBatch.DrawString(Font, "Individus: " + _monde.Individus.Count.ToString(), new Vector2(20, yPosition), Color.Black);
+            yPosition += 20;
+            spriteBatch.DrawString(Font, "Eggs: " + _monde.Eggs.Count.ToString(), new Vector2(20, yPosition), Color.Black);
             yPosition += 20;
 
             if (this.GameOnPause)

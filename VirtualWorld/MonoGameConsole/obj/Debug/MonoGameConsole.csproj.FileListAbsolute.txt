@@ -1,4 +1,3 @@
-D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\obj\Debug\MonoGameConsole.csprojResolveAssemblyReference.cache
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\bin\Debug\MonoGameConsole.dll
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\bin\Debug\MonoGameConsole.pdb
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\bin\Debug\MonoGame.Framework.dll
@@ -17,5 +16,6 @@ D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameC
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\bin\Debug\SharpDX.Direct2D1.xml
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\bin\Debug\SharpDX.XInput.xml
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\bin\Debug\SharpDX.MediaFoundation.xml
+D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\obj\Debug\MonoGameConsole.csprojResolveAssemblyReference.cache
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\obj\Debug\MonoGameConsole.dll
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\MonoGameConsole\obj\Debug\MonoGameConsole.pdb

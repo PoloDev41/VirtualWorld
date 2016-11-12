@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VirtualWorld;
+using VirtualWorld.World.Actors.Creatures.IA;
 
 namespace VirtualWorld.World.Actors.Creature
 {
@@ -20,6 +21,14 @@ namespace VirtualWorld.World.Actors.Creature
         /// weight of the synapse
         /// </summary>
         public double Weight { get; set; }
+
+        internal Synapse Clone()
+        {
+            Synapse clone = new Synapse();
+            clone.IndexNeurone = this.IndexNeurone;
+            clone.Weight = Weight + StemCell.rand.NextDouble()*2-1;
+            return clone;
+        }
     }
 
     /// <summary>
@@ -27,16 +36,23 @@ namespace VirtualWorld.World.Actors.Creature
     /// </summary>
     public class StemCell
     {
+        public static Random rand = new Random();
         public double Output { get; set; }
         protected double NewOutput { get; set; }
 
         public virtual void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {
+            proprietaire.PointDeVie -= deltaTime;
         }
 
         public virtual void UpdateSynch(Monde m, Individu proprietaire, float deltaTime)
         {
             this.Output = this.NewOutput;
+        }
+
+        public virtual StemCell Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -47,7 +63,15 @@ namespace VirtualWorld.World.Actors.Creature
         public override void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {
             base.UpdateAsynch(m, proprietaire, deltaTime);
+            proprietaire.PointDeVie -= deltaTime; //it's volontary, a nerf sub double
             this.NewOutput = this.Process(m, proprietaire);
+        }
+
+        public override StemCell Clone()
+        {
+            Nerf clone = new Nerf();
+            clone.Process = this.Process;
+            return clone;
         }
     }
 
@@ -56,7 +80,6 @@ namespace VirtualWorld.World.Actors.Creature
     /// </summary>
     public class Neurone : StemCell
     {
-        private static Random rand = new Random();
 
         public static double GenerateNewWeight()
         {
@@ -66,6 +89,23 @@ namespace VirtualWorld.World.Actors.Creature
         public double Biais { get; set; }
         public Synapse[] Synapses { get; set; }
         public NerfMuscleAction ActionMuscle { get; set; }
+
+        public override StemCell Clone()
+        {
+            Neurone clone = new Neurone();
+            clone.Biais = this.Biais + StemCell.rand.NextDouble() * 2 - 1;
+            if (rand.Next(0, 101) > 1)
+                clone.ActionMuscle = this.ActionMuscle;
+            else
+                clone.ActionMuscle = NerfMuscleActionList.GetRandomAction();
+            clone.Synapses = new Synapse[this.Synapses.Length];
+            for (int i = 0; i < clone.Synapses.Length; i++)
+            {
+                Synapse s = this.Synapses[i].Clone();
+                clone.Synapses[i] = s;
+            }
+            return clone;
+        }
 
         public override void UpdateAsynch(Monde m, Individu proprietaire, float deltaTime)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtualWorld.World.Actors;
 using VirtualWorld.World.Actors.Creature;
 using VirtualWorld.World.Actors.Creature.IA;
 using VirtualWorld.World.Actors.Creatures.IA;
@@ -49,7 +50,6 @@ namespace VirtualWorld.World
             p.PointDeVieDemarrage = p.PointDeVie = rand.Next(_ten, ten) + (float)rand.NextDouble();
             p.TempsGraine = (float)(rand.Next(4, 6) + rand.NextDouble());
             p.AltitudeIdeal = pt.Altitude;
-
             return p;
         }
 
@@ -86,11 +86,12 @@ namespace VirtualWorld.World
                             Weight = Neurone.GenerateNewWeight()
                         }
                     },
+                    Biais = 1,
                     ActionMuscle = NerfMuscleActionList.WalkRight,
-                    Output = 1
                 }
             };
             ind.Intelligence = b;
+            ind.TempsEgg = (float)(rand.Next(8, 15) + rand.NextDouble());
             return ind;
         }
 
@@ -108,6 +109,23 @@ namespace VirtualWorld.World
 
             return list;
         }
+
+        public static List<Egg> AddEggs(Monde m, int number)
+        {
+            List<Egg> list = new List<Egg>();
+            for (int i = 0; i < number; i++)
+            {
+                float x = rand.Next(0, (int)m.TaillePx.X);
+                float y = rand.Next(0, (int)m.TaillePx.Y);
+
+                Individu ind = CreateIndividu(x, y, m);
+                Egg e = new Egg(ind, new Microsoft.Xna.Framework.Vector2(x, y), m);
+                list.Add(e);
+            }
+
+            return list;
+        }
+
 
         public static ParcelleTerrain[][] GenerateGround(int sizex, int sizey)
         {
@@ -147,10 +165,12 @@ namespace VirtualWorld.World
 
                 Plante p = CreatePlante(monde.Parcelles[(int)(x / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)][(int)(y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)],
                                         x, y, monde);
+                Fruit f = new Fruit(new Microsoft.Xna.Framework.Vector2(x, y), p, monde);
 
-                list.Add(new Fruit(new Microsoft.Xna.Framework.Vector2(x, y),
-                    p,
-                    monde));
+                f.PointDeVieDemarrage *= ((float)Monde.rand.Next(90, 111) / 100f);
+                f.PointDeVie = f.PointDeVieDemarrage;
+
+                list.Add(f);
             }
 
             return list;

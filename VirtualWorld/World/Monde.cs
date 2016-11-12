@@ -9,6 +9,7 @@ using VirtualWorld.World;
 using Microsoft.Xna.Framework.Content;
 using MonoGameConsole;
 using System.Threading.Tasks;
+using VirtualWorld.World.Actors;
 
 namespace VirtualWorld
 {
@@ -30,16 +31,34 @@ namespace VirtualWorld
             NORMAL
         }
 
-        public float TemperatureMax { get; set; }
-        public float TemperatureMin { get; set; }
+        public float TemperatureMax
+        {
+            get;
+            set;
+        }
+
+        public float TemperatureMin
+        {
+            get;
+            set;
+        }
+
         public float AltitudeMax { get; set; }
         public float AltitudeMin { get; set; }
 
         public static readonly int TimeSeason = 10;
         public static readonly int TimeInterSeason = 30;
+        public static readonly int TimeChangementGlobalWarming = (TimeSeason * 2 + TimeInterSeason * 2) * 1;
+        public static Random rand = new Random();
 
+        private bool _viewPlante = true;
         private ViewType _view = ViewType.NORMAL;
         private float _timeSaison = TimeSeason;
+
+        /// <summary>
+        /// number of years of the world
+        /// </summary>
+        public int Years { get; set; } = 1;
 
         /// <summary>
         /// saison courante du monde
@@ -74,6 +93,11 @@ namespace VirtualWorld
         /// list des graines
         /// </summary>
         public List<Graine> Graines { get; set; }
+
+        /// <summary>
+        /// list of eggs
+        /// </summary>
+        public List<Egg> Eggs { get; set; }
 
         /// <summary>
         /// parcelle de terrain du monde
@@ -126,6 +150,12 @@ namespace VirtualWorld
                             return "view changed";
                         }
                         break;
+                    case ("Tree"):
+                        if (arguments.Length > 1 && arguments[1] == "Disable")
+                            _viewPlante = false;
+                        else
+                            _viewPlante = true;
+                        break;
                     default:
                         break;
                 }
@@ -139,7 +169,8 @@ namespace VirtualWorld
             get
             {
                 return "-Generate" + Environment.NewLine +
-                        "-View [Temperature-Altitude-Engrais]";
+                        "-View [Temperature-Altitude-Engrais]" + Environment.NewLine +
+                        "Tree [Enable;Disable]";
             }
         }
 
@@ -246,10 +277,48 @@ namespace VirtualWorld
                 }
             }
 
+            Plantes = new List<Plante>();
+            Fruits = new List<Fruit>();
+            Individus = new List<Individu>();
+            Eggs = new List<Egg>();
+            Graines = new List<Graine>();
+
             Plantes = Factory.AddPlantes(this, 5);
             Fruits = Factory.AddFruits(this, 100);
             Individus = Factory.AddIndividus(this, 10);
+            Eggs = Factory.AddEggs(this, 10);
             this.Graines = new List<Graine>();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Task tParcelle = Task.Factory.StartNew(() => {
+                    foreach (var item in this.Parcelles)
+                    {
+                        Parallel.ForEach(item, x => x.UpdateAsynch((float)rand.NextDouble(), this));
+                    }
+                });
+
+                Task tPlante = Task.Factory.StartNew(() =>
+                {
+                    Parallel.ForEach(Plantes, x => x.UpdateAsynch((float)rand.NextDouble(), this));
+                });
+                tParcelle.Wait();
+                tPlante.Wait();
+
+                for (int j = this.Plantes.Count - 1; j >= 0; j--)
+                {
+                    if (this.Plantes[j].Mort == true)
+                    {
+                        this.Plantes.RemoveAt(j);
+                    }
+                    else
+                    {
+                        this.Plantes[j].UpdateSynch((float)rand.NextDouble(), this);
+                    }
+                }
+            }
+
+            Plantes.AddRange(Factory.AddPlantes(this, 5));
         }
 
         internal void LoadContent(ContentManager content)
@@ -267,7 +336,9 @@ namespace VirtualWorld
 
             Graine.GraineSol = content.Load<Texture2D>("Images//graine");
 
-            Individu.IndividuTexture = content.Load<Texture2D>("Images//indi.png");
+            Individu.IndividuTexture = content.Load<Texture2D>("Images//indi");
+
+            Egg.EggGround = content.Load<Texture2D>("Images//oeuf");
         }
 
         public void Update(float deltaTime)
@@ -285,6 +356,7 @@ namespace VirtualWorld
                 switch (this.SaisonCourante)
                 {
                     case SeasonTournament.SAISON1:
+                        Years++;
                         this.SaisonCourante = SeasonTournament.SAISON1_2;
                         _timeSaison = TimeInterSeason;
                         break;
@@ -303,8 +375,8 @@ namespace VirtualWorld
                     default:
                         break;
                 }
-               
             }
+            HandleGlobalWarming(deltaTime);
 
             Task tParcelle = Task.Factory.StartNew(() => {
                 foreach (var item in this.Parcelles)
@@ -333,11 +405,17 @@ namespace VirtualWorld
                 Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
             });
 
+            Task tEggs = Task.Factory.StartNew(() =>
+            {
+                Parallel.ForEach(Eggs, x => x.UpdateAsynch(deltaTime, this));
+            });
+
             tFruits.Wait();
             tGraine.Wait();
             tParcelle.Wait();
             tPlante.Wait();
             tIndividu.Wait();
+            tEggs.Wait();
 
             for (int i = this.Plantes.Count - 1; i >= 0; i--)
             {
@@ -355,7 +433,7 @@ namespace VirtualWorld
             {
                 if (this.Fruits[i].Mort == true)
                 {
-                    if(this.Fruits[i].Plante != null)
+                    if(this.Fruits[i].Plante != null && rand.Next(0,101) < this.Fruits[i].LuckGraine)
                     {
                         this.Graines.Add(new Graine(this.Fruits[i].Plante, this.Fruits[i].Position, this));
                     }
@@ -385,6 +463,38 @@ namespace VirtualWorld
                     this.Individus[i].UpdateSynch(deltaTime, this);
                 }
             }
+
+            for (int i = this.Eggs.Count - 1; i >= 0; i--)
+            {
+                if(this.Eggs[i].Mort == true)
+                {
+                    this.Individus.Add(this.Eggs[i].RefIndividu);
+                    this.Eggs.RemoveAt(i);
+                }
+            }
+        }
+
+        private float _newTemperatureOffset = 0;
+        private float _oldTemperatureOffset = 0;
+        private int _yearStartWarming = 0;
+        public bool GlobalWarmingAction = false;
+        private void HandleGlobalWarming(float deltaTime)
+        {
+            if(this.Years % 5 == 0 && GlobalWarmingAction == false)
+            {
+                _yearStartWarming = this.Years;
+                GlobalWarmingAction = true;
+                _newTemperatureOffset = (float)(rand.Next(-2, 3) * rand.NextDouble());
+                _oldTemperatureOffset = ParcelleTerrain.OffsetTemperatureParcelle;
+            }
+            else if(GlobalWarmingAction == true)
+            {
+                ParcelleTerrain.OffsetTemperatureParcelle += deltaTime * (_newTemperatureOffset - _oldTemperatureOffset) / Monde.TimeChangementGlobalWarming;
+                if(this.Years == _yearStartWarming+1)
+                {
+                    GlobalWarmingAction = false;
+                }
+            }
         }
 
         public void DrawActors(SpriteBatch spriteBatch)
@@ -392,7 +502,9 @@ namespace VirtualWorld
             DrawGraines(spriteBatch);
             DrawFruits(spriteBatch);
             DrawPlante(spriteBatch);
+            DrawEggs(spriteBatch);
             DrawIndividus(spriteBatch);
+
         }
 
         private void DrawIndividus(SpriteBatch spriteBatch)
@@ -402,7 +514,7 @@ namespace VirtualWorld
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
                                 this.Individus[i].PositionImage, null, Color.White,(float) (this.Individus[i].Angle + Math.PI/2),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
-                                this.Individus[i].FactorAgrandissement,
+                                Math.Max(0.1f, this.Individus[i].FactorAgrandissement),
                                    SpriteEffects.None, 0f);
             }
         }
@@ -419,6 +531,8 @@ namespace VirtualWorld
         private void DrawPlante(SpriteBatch spriteBatch)
         {
             float depth;
+            if (_viewPlante == false)
+                return;
             if(this._view == ViewType.TEMPERATURE)
             {
                 byte ratio;
@@ -479,6 +593,15 @@ namespace VirtualWorld
             }
         }
 
+        private void DrawEggs(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < this.Eggs.Count; i++)
+            {
+                spriteBatch.Draw(Egg.EggGround, this.Eggs[i].PositionImage, null, Color.White, 0f, Vector2.Zero, this.Eggs[i].FactorAgrandissement,
+                                   SpriteEffects.None, 0f);
+            }
+        }
+
         public void DrawGround(SpriteBatch spriteBatch)
         {
             byte ratio;
@@ -502,7 +625,7 @@ namespace VirtualWorld
                             if (Parcelles[i][j].Temperature < 0)
                             {
                                 ratio = (byte)Math.Min(255,
-                                    (Parcelles[i][j].Temperature * 255 / this.TemperatureMin));
+                                    Math.Abs(Parcelles[i][j].Temperature * 255 / this.TemperatureMin));
 
                                 spriteBatch.Draw(ParcelleTerrain.Blanc, new Vector2(i * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX, j * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)
                                     , null, new Color(0, 0, ratio), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -510,7 +633,7 @@ namespace VirtualWorld
                             else
                             {
                                 ratio = (byte)Math.Min(255,
-                                    (Parcelles[i][j].Temperature * 255 / this.TemperatureMax));
+                                    Math.Abs(Parcelles[i][j].Temperature * 255 / this.TemperatureMax));
 
                                 spriteBatch.Draw(ParcelleTerrain.Blanc, new Vector2(i * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX, j * ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX),
                                     null, new Color(ratio, 0, 0), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
