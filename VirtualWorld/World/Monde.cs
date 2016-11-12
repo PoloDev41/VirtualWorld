@@ -283,7 +283,7 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 5);
+            Plantes = Factory.AddPlantes(this, 7);
             Fruits = Factory.AddFruits(this, 100);
             Individus = Factory.AddIndividus(this, 10);
             Eggs = Factory.AddEggs(this, 10);

@@ -25,6 +25,7 @@ namespace VirtualWorld.World.Actors
             this.RefIndividu = ev;
             this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_EGG_PX * this.FactorAgrandissement / 2,
                                             this.Position.Y - TAILLE_IMAGE_EGG_PX * this.FactorAgrandissement / 2);
+            this.FactorAgrandissement = ev.FactorAgrandissement;
         }
 
         public Egg(Individu ev, Monde m):
@@ -33,6 +34,7 @@ namespace VirtualWorld.World.Actors
             this.TempsEgg = ev.TempsEgg;
             this.FactorAgrandissement = 1f;
             this.RefIndividu = ev.Clone(m);
+            this.FactorAgrandissement = this.RefIndividu.FactorAgrandissement;
             this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_EGG_PX * this.FactorAgrandissement / 2,
                                             this.Position.Y - TAILLE_IMAGE_EGG_PX * this.FactorAgrandissement / 2);
         }
