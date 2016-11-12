@@ -36,6 +36,12 @@ namespace VirtualWorld
 
         public float TempsEgg { get; internal set; }
 
+        public Color Coloration { get; set; }
+
+        public float IdealTemperature { get; set; }
+
+        public int NumberChild { get; set; }
+
         #region Optimize
 
         public Fruit NearestFruit_Opti { get; set; }
@@ -50,7 +56,8 @@ namespace VirtualWorld
             ComputeRender();
             this.PointDeVieDemarrage *= 10;
             this.PointDeVie = this.PointDeVieDemarrage;
-            this.SeuilEgg = this.PointDeVieDemarrage;
+            this.SeuilEgg = this.PointDeVieDemarrage * 1.5f;
+            Coloration = Color.White;
         }
 
         public Individu Clone(Monde m)
@@ -61,7 +68,13 @@ namespace VirtualWorld
             clone.Intelligence = this.Intelligence.Clone();
             clone.TempsEgg = this.TempsEgg * ((float)Monde.rand.Next(90, 111) / 100f);
             clone.FactorAgrandissement = this.FactorAgrandissement * ((float)Monde.rand.Next(90, 111) / 100f);
-            clone.SeuilEgg = clone.PointDeVieDemarrage;
+            clone.SeuilEgg = clone.PointDeVieDemarrage * 1.5f;
+            clone.IdealTemperature = this.IdealTemperature + (float)(Monde.rand.NextDouble()*2+1);
+            Color c = new Color(
+                (byte)Math.Min((this.Coloration.R * ((float)Monde.rand.Next(90, 111) / 100f)), 255),
+                (byte)Math.Min((this.Coloration.G * ((float)Monde.rand.Next(90, 111) / 100f)), 255),
+                (byte)Math.Min((this.Coloration.B * ((float)Monde.rand.Next(90, 111) / 100f)), 255));
+            clone.Coloration = c;
             return clone;
         }
 
@@ -69,7 +82,13 @@ namespace VirtualWorld
         {
             Parallel.ForEach(this.Intelligence.Neurones, x => x.UpdateAsynch(monde, this, deltaTime));
 
-            base.UpdateAsynch(deltaTime, monde);
+            //base.UpdateAsynch(deltaTime, monde);
+            Age += deltaTime;
+            this.PointDeVie -= (5 * FactorAgrandissement * deltaTime * Math.Abs(this.IdealTemperature - this.RefParcelle.Temperature));
+            if (this.PointDeVie <= 0)
+            {
+                this.Mort = true;
+            }
         }
 
         public override void UpdateSynch(float deltaTime, Monde monde)
@@ -86,13 +105,16 @@ namespace VirtualWorld
                 this.SeuilEgg *= 1.5f;
                 this.PointDeVie -= this.PointDeVieDemarrage * 1.1f;
                 monde.Eggs.Add(new World.Actors.Egg(this.Clone(monde), monde));
+                NumberChild++;
             }
 
             LastTimeToComputeFruit_Opti--;
-            if(LastTimeToComputeFruit_Opti == 0 || NearestFruit_Opti.Mort == true)
+            if(LastTimeToComputeFruit_Opti == 0 ||
+                NearestFruit_Opti == null ||
+                NearestFruit_Opti.Mort == true)
             {
                 NearestFruit_Opti = null;
-                LastTimeToComputeFruit_Opti = 1;
+                LastTimeToComputeFruit_Opti = 2;
             }
             
         }
@@ -104,6 +126,8 @@ namespace VirtualWorld
 
             this.PositionImage = new Vector2(this.Position.X + TAILLE_IMAGE_INDIVIDU_PX_X * this.FactorAgrandissement / 2,
                                                 this.Position.Y + TAILLE_IMAGE_INDIVIDU_PX_Y * this.FactorAgrandissement / 2);
+            this.RefParcelle = monde.Parcelles[(int)(this.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)]
+                                               [(int)(this.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)];
         }
 
         private void Init(Monde m)

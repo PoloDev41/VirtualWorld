@@ -100,10 +100,25 @@ namespace VirtualWorld.World
             List<Individu> list = new List<Individu>();
             for (int i = 0; i < number; i++)
             {
-                float x = rand.Next(0, (int)m.TaillePx.X);
-                float y = rand.Next(0, (int)m.TaillePx.Y);
+
+                float x;
+                float y;
+
+                if(m.Plantes.Count > 0)
+                {
+                    Plante p = m.Plantes[rand.Next(0, m.Plantes.Count)];
+                    x = p.Position.X + EtreVivant.rand.Next(-30, 30 + 1) * p.FactorAgrandissement;
+                    y = p.Position.Y + EtreVivant.rand.Next(-30, 30 + 1) * p.FactorAgrandissement;
+                }
+                else
+                {
+                    x = rand.Next(0, (int)m.TaillePx.X);
+                    y = rand.Next(0, (int)m.TaillePx.Y);
+                }
 
                 Individu ind = CreateIndividu(x, y, m);
+                ind.IdealTemperature = m.Parcelles[(int)(ind.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)]
+                                                [(int)(ind.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)].Temperature;
                 list.Add(ind);
             }
 
@@ -125,7 +140,6 @@ namespace VirtualWorld.World
 
             return list;
         }
-
 
         public static ParcelleTerrain[][] GenerateGround(int sizex, int sizey)
         {

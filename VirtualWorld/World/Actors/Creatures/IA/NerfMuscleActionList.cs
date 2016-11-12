@@ -19,7 +19,7 @@ namespace VirtualWorld.World.Actors.Creatures.IA
             {
                 proprietaire.PointDeVie += nearest.TakeLife(proprietaire.FactorAgrandissement / (nearest.FactorAgrandissement * 2)
                                             * (float)power * deltaTime * 100)*2; //*100 to compense deltaTime
-                nearest.LuckGraine -= 25;
+                nearest.LuckGraine -= 15;
             }
 
         }

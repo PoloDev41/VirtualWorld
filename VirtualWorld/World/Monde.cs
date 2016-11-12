@@ -283,7 +283,7 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 7);
+            Plantes = Factory.AddPlantes(this, 10);
             Fruits = Factory.AddFruits(this, 100);
             Individus = Factory.AddIndividus(this, 10);
             Eggs = Factory.AddEggs(this, 10);
@@ -380,7 +380,7 @@ namespace VirtualWorld
             HandleGlobalWarming(deltaTime);
 
             Task tParcelle = Task.Factory.StartNew(() => {
-                for (int i = 0; i < Parcelles.Length; i+=2)
+                /*for (int i = 0; i < Parcelles.Length; i+=2)
                 {
                     if(_moduloParcelle == 0)
                     {
@@ -394,7 +394,16 @@ namespace VirtualWorld
                 if (_moduloParcelle == 0)
                     _moduloParcelle++;
                 else
-                    _moduloParcelle = 0;
+                    _moduloParcelle = 0;*/
+                for (int i = 0; i < this.Parcelles.Length; i++)
+                {
+                    Parallel.ForEach(Parcelles[i], x => x.UpdateAsynch(deltaTime, this));
+                }
+            });
+
+            Task tIndividu = Task.Factory.StartNew(() =>
+            {
+                Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
             });
 
             Task tPlante = Task.Factory.StartNew(() =>
@@ -410,11 +419,6 @@ namespace VirtualWorld
             Task tGraine = Task.Factory.StartNew(() =>
             {
                 Parallel.ForEach(Graines, x => x.UpdateAsynch(deltaTime, this));
-            });
-
-            Task tIndividu = Task.Factory.StartNew(() =>
-            {
-                Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
             });
 
             Task tEggs = Task.Factory.StartNew(() =>
@@ -496,7 +500,7 @@ namespace VirtualWorld
             {
                 _yearStartWarming = this.Years;
                 GlobalWarmingAction = true;
-                _newTemperatureOffset = (float)(rand.Next(-2, 3) * rand.NextDouble());
+                _newTemperatureOffset = (float)(rand.Next(-2, 3) + (2*rand.NextDouble()+1));
                 _oldTemperatureOffset = ParcelleTerrain.OffsetTemperatureParcelle;
             }
             else if(GlobalWarmingAction == true)
@@ -524,7 +528,7 @@ namespace VirtualWorld
             for (int i = 0; i < this.Individus.Count; i++)
             {
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
-                                this.Individus[i].PositionImage, null, Color.White,(float) (this.Individus[i].Angle + Math.PI/2),
+                                this.Individus[i].PositionImage, null,this.Individus[i].Coloration,(float) (this.Individus[i].Angle + Math.PI/2),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
                                 Math.Max(0.1f, this.Individus[i].FactorAgrandissement),
                                    SpriteEffects.None, 0f);
@@ -609,7 +613,8 @@ namespace VirtualWorld
         {
             for (int i = 0; i < this.Eggs.Count; i++)
             {
-                spriteBatch.Draw(Egg.EggGround, this.Eggs[i].PositionImage, null, Color.White, 0f, Vector2.Zero, this.Eggs[i].FactorAgrandissement,
+                spriteBatch.Draw(Egg.EggGround, this.Eggs[i].PositionImage, null, 
+                                this.Eggs[i].RefIndividu.Coloration, 0f, Vector2.Zero, this.Eggs[i].FactorAgrandissement,
                                    SpriteEffects.None, 0f);
             }
         }

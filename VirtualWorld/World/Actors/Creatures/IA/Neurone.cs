@@ -26,7 +26,10 @@ namespace VirtualWorld.World.Actors.Creature
         {
             Synapse clone = new Synapse();
             clone.IndexNeurone = this.IndexNeurone;
-            clone.Weight = Weight + StemCell.rand.NextDouble()*2-1;
+            if(StemCell.rand.Next(0,101) < 10)
+                clone.Weight = Weight + StemCell.rand.NextDouble()*2-1;
+            else
+                clone.Weight = Weight;
             return clone;
         }
     }
