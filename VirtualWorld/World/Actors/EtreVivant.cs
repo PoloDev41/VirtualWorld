@@ -47,6 +47,8 @@ namespace VirtualWorld
         /// </summary>
         public float PointDeVieDemarrage { get; set; }
 
+        public double Age { get; set; }
+
         public ParcelleTerrain RefParcelle { get; set; }
 
         /// <summary>
@@ -115,6 +117,7 @@ namespace VirtualWorld
 
         public virtual void UpdateAsynch(float deltaTime, Monde monde)
         {
+            Age += deltaTime;
             this.PointDeVie -= (5 * FactorAgrandissement * deltaTime);
             if(this.PointDeVie <= 0)
             {

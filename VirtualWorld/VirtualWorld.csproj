@@ -44,6 +44,7 @@
     <Compile Include="IRender.cs" />
     <Compile Include="World\Actors\Creatures\IA\NerfMuscleActionList.cs" />
     <Compile Include="World\Actors\Creatures\IA\NerfSensorList.cs" />
+    <Compile Include="World\Actors\Egg.cs" />
     <Compile Include="World\Actors\EtreVivant.cs" />
     <Compile Include="World\Actors\Fruit.cs" />
     <Compile Include="World\Actors\Graine.cs" />
@@ -126,6 +127,9 @@
     <Content Include="Content\Images\indi.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Images\indi_chaud.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Images\neige.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -160,6 +164,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Images\zzz.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Images\indi_froid.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />

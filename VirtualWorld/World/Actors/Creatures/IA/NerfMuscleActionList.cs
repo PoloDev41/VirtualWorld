@@ -14,11 +14,12 @@ namespace VirtualWorld.World.Actors.Creatures.IA
         {
             Fruit nearest = NerfSensorList.FindNearestFruit(m, proprietaire);
 
-            if(nearest != null && NerfSensorList.IsCloosed(nearest, proprietaire) == true)
+            proprietaire.PointDeVie -= (float)(power * deltaTime * proprietaire.FactorAgrandissement);
+            if (nearest != null && NerfSensorList.IsCloosed(nearest, proprietaire) == true)
             {
                 proprietaire.PointDeVie += nearest.TakeLife(proprietaire.FactorAgrandissement / (nearest.FactorAgrandissement * 2)
                                             * (float)power * deltaTime * 100)*2; //*100 to compense deltaTime
-                nearest.LuckGraine -= 25;
+                nearest.LuckGraine -= 15;
             }
 
         }

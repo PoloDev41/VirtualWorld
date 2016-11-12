@@ -14,7 +14,7 @@ namespace VirtualWorld
 
         public static readonly float ENGRAIS_MAX = 1000;
         public static readonly int AMPLITUDE_ALTITUDE = 50;
-        public static readonly int AMPLITUDE_TEMPERATURE = 30;
+        public static readonly int AMPLITUDE_TEMPERATURE = 60;
         public static readonly int OFFSET_TEMPERATURE = 10;
         public static readonly int FACTOR_ALTITUDE_TEMPERATURE = 5;
         //public static readonly int TEMPERATURE_MAX = AMPLITUDE_TEMPERATURE + OFFSET_TEMPERATURE + 20;

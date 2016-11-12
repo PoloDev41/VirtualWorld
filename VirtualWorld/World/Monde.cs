@@ -283,7 +283,7 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 5);
+            Plantes = Factory.AddPlantes(this, 10);
             Fruits = Factory.AddFruits(this, 100);
             Individus = Factory.AddIndividus(this, 10);
             Eggs = Factory.AddEggs(this, 10);
@@ -337,10 +337,13 @@ namespace VirtualWorld
             Graine.GraineSol = content.Load<Texture2D>("Images//graine");
 
             Individu.IndividuTexture = content.Load<Texture2D>("Images//indi");
+            Individu.IndividuFroidTexture = content.Load<Texture2D>("Images//indi_froid");
+            Individu.IndividuChaudTexture = content.Load<Texture2D>("Images//indi_chaud");
 
             Egg.EggGround = content.Load<Texture2D>("Images//oeuf");
         }
 
+        private int _moduloParcelle = 0;
         public void Update(float deltaTime)
         {
             if(this.Plantes.Count == 0 || this.Individus.Count == 0)
@@ -379,10 +382,30 @@ namespace VirtualWorld
             HandleGlobalWarming(deltaTime);
 
             Task tParcelle = Task.Factory.StartNew(() => {
-                foreach (var item in this.Parcelles)
+                /*for (int i = 0; i < Parcelles.Length; i+=2)
                 {
-                    Parallel.ForEach(item, x => x.UpdateAsynch(deltaTime, this));
+                    if(_moduloParcelle == 0)
+                    {
+                        Parallel.ForEach(Parcelles[i], x => x.UpdateAsynch(deltaTime*2, this));
+                    }
+                    else
+                    {
+                        Parallel.ForEach(Parcelles[i+1], x => x.UpdateAsynch(deltaTime*2, this));
+                    }
                 }
+                if (_moduloParcelle == 0)
+                    _moduloParcelle++;
+                else
+                    _moduloParcelle = 0;*/
+                for (int i = 0; i < this.Parcelles.Length; i++)
+                {
+                    Parallel.ForEach(Parcelles[i], x => x.UpdateAsynch(deltaTime, this));
+                }
+            });
+
+            Task tIndividu = Task.Factory.StartNew(() =>
+            {
+                Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
             });
 
             Task tPlante = Task.Factory.StartNew(() =>
@@ -398,11 +421,6 @@ namespace VirtualWorld
             Task tGraine = Task.Factory.StartNew(() =>
             {
                 Parallel.ForEach(Graines, x => x.UpdateAsynch(deltaTime, this));
-            });
-
-            Task tIndividu = Task.Factory.StartNew(() =>
-            {
-                Parallel.ForEach(Individus, x => x.UpdateAsynch(deltaTime, this));
             });
 
             Task tEggs = Task.Factory.StartNew(() =>
@@ -484,7 +502,7 @@ namespace VirtualWorld
             {
                 _yearStartWarming = this.Years;
                 GlobalWarmingAction = true;
-                _newTemperatureOffset = (float)(rand.Next(-2, 3) * rand.NextDouble());
+                _newTemperatureOffset = (float)(rand.Next(-2, 3) + (2*rand.NextDouble()+1));
                 _oldTemperatureOffset = ParcelleTerrain.OffsetTemperatureParcelle;
             }
             else if(GlobalWarmingAction == true)
@@ -512,7 +530,7 @@ namespace VirtualWorld
             for (int i = 0; i < this.Individus.Count; i++)
             {
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
-                                this.Individus[i].PositionImage, null, Color.White,(float) (this.Individus[i].Angle + Math.PI/2),
+                                this.Individus[i].PositionImage, null,this.Individus[i].Coloration,(float) (this.Individus[i].Angle),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
                                 Math.Max(0.1f, this.Individus[i].FactorAgrandissement),
                                    SpriteEffects.None, 0f);
@@ -597,7 +615,8 @@ namespace VirtualWorld
         {
             for (int i = 0; i < this.Eggs.Count; i++)
             {
-                spriteBatch.Draw(Egg.EggGround, this.Eggs[i].PositionImage, null, Color.White, 0f, Vector2.Zero, this.Eggs[i].FactorAgrandissement,
+                spriteBatch.Draw(Egg.EggGround, this.Eggs[i].PositionImage, null, 
+                                this.Eggs[i].RefIndividu.Coloration, 0f, Vector2.Zero, this.Eggs[i].FactorAgrandissement,
                                    SpriteEffects.None, 0f);
             }
         }

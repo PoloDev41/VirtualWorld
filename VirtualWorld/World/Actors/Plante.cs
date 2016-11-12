@@ -106,7 +106,7 @@ namespace VirtualWorld
 
             float wish = BienEtre * FactorAgrandissement * deltaTime;
             float engrai = RefParcelle.RemoveEngrais(wish);
-            this.PointDeVie += engrai;
+            this.PointDeVie += engrai*.75f;
 
             float f = this.PointDeVie - previous;
 
@@ -120,6 +120,7 @@ namespace VirtualWorld
             {
                 float prevFactor = FactorAgrandissement;
                 this.FactorAgrandissement += f / (this.PointDeVie * this.FactorAgrandissement);
+
                 if((int)prevFactor < (int)this.FactorAgrandissement)
                 {
                     ParcelleTerrain p = null;
@@ -134,7 +135,7 @@ namespace VirtualWorld
 
             for (int i = 0; i < this.TerreProche.Count; i++)
             {
-                this.TerreProche[i].RemoveEngrais(wish);
+                this.TerreProche[i].RemoveEngrais(wish*1.5f);
             }
         }
 

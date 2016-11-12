@@ -92,6 +92,8 @@ namespace VirtualWorld.World
             };
             ind.Intelligence = b;
             ind.TempsEgg = (float)(rand.Next(8, 15) + rand.NextDouble());
+            ind.IdealTemperature = m.Parcelles[(int)(ind.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)]
+                                [(int)(ind.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)].Temperature;
             return ind;
         }
 
@@ -100,10 +102,24 @@ namespace VirtualWorld.World
             List<Individu> list = new List<Individu>();
             for (int i = 0; i < number; i++)
             {
-                float x = rand.Next(0, (int)m.TaillePx.X);
-                float y = rand.Next(0, (int)m.TaillePx.Y);
+
+                float x;
+                float y;
+
+                if(m.Plantes.Count > 0)
+                {
+                    Plante p = m.Plantes[rand.Next(0, m.Plantes.Count)];
+                    x = p.Position.X + EtreVivant.rand.Next(-30, 30 + 1) * p.FactorAgrandissement;
+                    y = p.Position.Y + EtreVivant.rand.Next(-30, 30 + 1) * p.FactorAgrandissement;
+                }
+                else
+                {
+                    x = rand.Next(0, (int)m.TaillePx.X);
+                    y = rand.Next(0, (int)m.TaillePx.Y);
+                }
 
                 Individu ind = CreateIndividu(x, y, m);
+
                 list.Add(ind);
             }
 
@@ -115,8 +131,20 @@ namespace VirtualWorld.World
             List<Egg> list = new List<Egg>();
             for (int i = 0; i < number; i++)
             {
-                float x = rand.Next(0, (int)m.TaillePx.X);
-                float y = rand.Next(0, (int)m.TaillePx.Y);
+                float x;
+                float y;
+
+                if (m.Plantes.Count > 0)
+                {
+                    Plante p = m.Plantes[rand.Next(0, m.Plantes.Count)];
+                    x = p.Position.X + EtreVivant.rand.Next(-30, 30 + 1) * p.FactorAgrandissement;
+                    y = p.Position.Y + EtreVivant.rand.Next(-30, 30 + 1) * p.FactorAgrandissement;
+                }
+                else
+                {
+                    x = rand.Next(0, (int)m.TaillePx.X);
+                    y = rand.Next(0, (int)m.TaillePx.Y);
+                }
 
                 Individu ind = CreateIndividu(x, y, m);
                 Egg e = new Egg(ind, new Microsoft.Xna.Framework.Vector2(x, y), m);
@@ -126,15 +154,14 @@ namespace VirtualWorld.World
             return list;
         }
 
-
         public static ParcelleTerrain[][] GenerateGround(int sizex, int sizey)
         {
             int increaseX = sizex + 10;
             int increaseY = sizey + 10;
             
             float[][] altitude = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_ALTITUDE, 2, 2);
-            float[][] temperature1 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_ALTITUDE, 2, 3);
-            float[][] temperature2 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_ALTITUDE, 2, 3);
+            float[][] temperature1 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_TEMPERATURE, 2, 3);
+            float[][] temperature2 = PerlinGenerator.GenerateMap(increaseX, increaseY, ParcelleTerrain.AMPLITUDE_TEMPERATURE, 3, 3);
 
             ParcelleTerrain[][] ground = new ParcelleTerrain[sizex][];
             for (int i = 0; i < ground.Length; i++)
