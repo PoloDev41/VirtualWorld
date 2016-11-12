@@ -21,6 +21,14 @@ namespace VirtualWorld
         /// texture de l'individu
         /// </summary>
         public static Texture2D IndividuTexture { get; set; }
+        /// <summary>
+        /// texture de l'individu
+        /// </summary>
+        public static Texture2D IndividuFroidTexture { get; set; }
+        /// <summary>
+        /// texture de l'individu
+        /// </summary>
+        public static Texture2D IndividuChaudTexture { get; set; }
 
         /// <summary>
         /// angle of the individu
@@ -142,7 +150,12 @@ namespace VirtualWorld
 
         private void ComputeRender()
         {
-            this.PictureUsed = Individu.IndividuTexture;
+            if (this.IdealTemperature <= -10)
+                this.PictureUsed = IndividuFroidTexture;
+            else if (this.IdealTemperature >= 20)
+                this.PictureUsed = IndividuChaudTexture;
+            else
+                this.PictureUsed = Individu.IndividuTexture;
         }
     }
 }

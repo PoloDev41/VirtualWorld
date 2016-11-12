@@ -337,6 +337,8 @@ namespace VirtualWorld
             Graine.GraineSol = content.Load<Texture2D>("Images//graine");
 
             Individu.IndividuTexture = content.Load<Texture2D>("Images//indi");
+            Individu.IndividuFroidTexture = content.Load<Texture2D>("Images//indi_froid");
+            Individu.IndividuChaudTexture = content.Load<Texture2D>("Images//indi_chaud");
 
             Egg.EggGround = content.Load<Texture2D>("Images//oeuf");
         }
@@ -528,7 +530,7 @@ namespace VirtualWorld
             for (int i = 0; i < this.Individus.Count; i++)
             {
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
-                                this.Individus[i].PositionImage, null,this.Individus[i].Coloration,(float) (this.Individus[i].Angle + Math.PI/2),
+                                this.Individus[i].PositionImage, null,this.Individus[i].Coloration,(float) (this.Individus[i].Angle),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
                                 Math.Max(0.1f, this.Individus[i].FactorAgrandissement),
                                    SpriteEffects.None, 0f);

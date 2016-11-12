@@ -60,3 +60,5 @@ D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\bin\Windo
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\obj\x86\Debug\VirtualWorld.csprojResolveAssemblyReference.cache
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\obj\x86\Debug\VirtualWorld.exe
 D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\obj\x86\Debug\VirtualWorld.pdb
+D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\bin\Windows\x86\Debug\Content\Images\indi_chaud.png
+D:\Mes documents\Visual Studio 2015\Projects\VirtualWorld\VirtualWorld\bin\Windows\x86\Debug\Content\Images\indi_froid.png
