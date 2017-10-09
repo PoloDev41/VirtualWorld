@@ -83,6 +83,7 @@ namespace VirtualWorld
                 (byte)Math.Min((this.Coloration.G * ((float)Monde.rand.Next(90, 111) / 100f)), 255),
                 (byte)Math.Min((this.Coloration.B * ((float)Monde.rand.Next(90, 111) / 100f)), 255));
             clone.Coloration = c;
+            ComputeRender();
             return clone;
         }
 
@@ -110,8 +111,8 @@ namespace VirtualWorld
 
             if(this.PointDeVie >= this.SeuilEgg)
             {
-                this.SeuilEgg *= 1.5f;
-                this.PointDeVie -= this.PointDeVieDemarrage * 1.1f;
+                this.SeuilEgg *= 1.2f;
+                this.PointDeVie -= this.PointDeVieDemarrage * 1.3f;
                 monde.Eggs.Add(new World.Actors.Egg(this.Clone(monde), monde));
                 NumberChild++;
             }
@@ -122,7 +123,7 @@ namespace VirtualWorld
                 NearestFruit_Opti.Mort == true)
             {
                 NearestFruit_Opti = null;
-                LastTimeToComputeFruit_Opti = 2;
+                LastTimeToComputeFruit_Opti = 5;
             }
             
         }

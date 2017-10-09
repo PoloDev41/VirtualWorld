@@ -217,8 +217,8 @@ namespace VirtualWorld
                     rec = new Rectangle(
                         (int)(this._monde.Individus[i].PositionImage.X),
                         (int)(this._monde.Individus[i].PositionImage.Y),
-                        (int)(this._monde.Individus[i].PictureUsed.Width * this._monde.Individus[i].FactorAgrandissement * this._camera.Zoom),
-                        (int)(this._monde.Individus[i].PictureUsed.Height * this._monde.Individus[i].FactorAgrandissement * this._camera.Zoom));
+                        (int)(this._monde.Individus[i].PictureUsed.Width * this._monde.Individus[i].FactorAgrandissement*2 * this._camera.Zoom),
+                        (int)(this._monde.Individus[i].PictureUsed.Height * this._monde.Individus[i].FactorAgrandissement*2* this._camera.Zoom));
                     if(rec.Contains(worldPosition))
                     {
                         this._selectedIndividu = this._monde.Individus[i];

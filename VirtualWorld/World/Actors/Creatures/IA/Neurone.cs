@@ -26,7 +26,7 @@ namespace VirtualWorld.World.Actors.Creature
         {
             Synapse clone = new Synapse();
             clone.IndexNeurone = this.IndexNeurone;
-            if(StemCell.rand.Next(0,101) < 10)
+            if(StemCell.rand.Next(0,101) < 5)
                 clone.Weight = Weight + StemCell.rand.NextDouble()*2-1;
             else
                 clone.Weight = Weight;
@@ -59,6 +59,9 @@ namespace VirtualWorld.World.Actors.Creature
         }
     }
 
+    /// <summary>
+    /// a nerf is a cell with a sensor to get information
+    /// </summary>
     public class Nerf: StemCell
     {
         public NerfSensor Process { get; set; }
@@ -79,7 +82,7 @@ namespace VirtualWorld.World.Actors.Creature
     }
 
     /// <summary>
-    /// class used to emulate a neurone
+    /// a neurone is a cell which can do action into the word
     /// </summary>
     public class Neurone : StemCell
     {
