@@ -67,7 +67,7 @@ namespace VirtualWorld
 
             Services.AddService(typeof(SpriteBatch), spriteBatch);
 
-            console = new GameConsole(this, spriteBatch, new GameConsoleOptions
+            /*console = new GameConsole(this, spriteBatch, new GameConsoleOptions
             {
                 ToggleKey = (int)Keys.F1,
                 Font = Content.Load<SpriteFont>("ConsoleFont"),
@@ -80,7 +80,7 @@ namespace VirtualWorld
                 BufferColor = Color.Gold
             });
             console.AddCommand(_monde, 
-                                this);
+                                this);*/
             this.prevKeyboard = Keyboard.GetState();
             this.prevMouseState = Mouse.GetState();
         }
@@ -100,48 +100,105 @@ namespace VirtualWorld
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             var keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
 
-            // movement of camera
-            if (this.console.Opened == false)
-            {
-                if (keyboardState.IsKeyDown(Keys.Up))
-                {
-                    _followingIndividu = false;
-                    _camera.Position -= new Vector2(0, 500) * deltaTime;
-                }
-                if (keyboardState.IsKeyDown(Keys.Down))
-                {
-                    _followingIndividu = false;
-                    _camera.Position += new Vector2(0, 500) * deltaTime;
-                }
-                if (keyboardState.IsKeyDown(Keys.Left))
-                {
-                    _followingIndividu = false;
-                    _camera.Position -= new Vector2(500, 0) * deltaTime;
-                }
-                if (keyboardState.IsKeyDown(Keys.Right))
-                {
-                    _followingIndividu = false;
-                    _camera.Position += new Vector2(500, 0) * deltaTime;
-                }
-                if (keyboardState.IsKeyDown(Keys.NumPad0))
-                {
-                    _camera.Zoom -= 0.3f * deltaTime;
-                }
-                if (keyboardState.IsKeyDown(Keys.NumPad1))
-                {
-                    _camera.Zoom += 0.3f * deltaTime;
-                }
 
-                if (keyboardState.IsKeyDown(Keys.Space) && prevKeyboard.IsKeyDown(Keys.Space) == false)
-                    GameOnPause = !GameOnPause;
+            if (this.console == null && System.Windows.Forms.Application.OpenForms.Count > 0)
+            {
+                console = new GameConsole(this, spriteBatch, new GameConsoleOptions
+                {
+                    ToggleKey = (int)Keys.F1,
+                    Font = Content.Load<SpriteFont>("ConsoleFont"),
+                    FontColor = Color.LawnGreen,
+                    Prompt = "~>",
+                    PromptColor = Color.Crimson,
+                    CursorColor = Color.OrangeRed,
+                    BackgroundColor = new Color(Color.Black, 150),
+                    PastCommandOutputColor = Color.Aqua,
+                    BufferColor = Color.Gold
+                });
+                console.AddCommand(_monde,
+                                    this);
             }
+            else if(this.console != null && this.console.Opened == false)
+            {
+                if (this.console.Opened == false)
+                {
+                    if (keyboardState.IsKeyDown(Keys.Up))
+                    {
+                        _followingIndividu = false;
+                        _camera.Position -= new Vector2(0, 500) * deltaTime;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.Down))
+                    {
+                        _followingIndividu = false;
+                        _camera.Position += new Vector2(0, 500) * deltaTime;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.Left))
+                    {
+                        _followingIndividu = false;
+                        _camera.Position -= new Vector2(500, 0) * deltaTime;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.Right))
+                    {
+                        _followingIndividu = false;
+                        _camera.Position += new Vector2(500, 0) * deltaTime;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.NumPad0))
+                    {
+                        _camera.Zoom -= 0.3f * deltaTime;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.NumPad1))
+                    {
+                        _camera.Zoom += 0.3f * deltaTime;
+                    }
+
+                    if (keyboardState.IsKeyDown(Keys.Space) && prevKeyboard.IsKeyDown(Keys.Space) == false)
+                        GameOnPause = !GameOnPause;
+                }
+            }
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Exit();
+
+          
+           /* if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                _followingIndividu = false;
+                _camera.Position -= new Vector2(0, 500) * deltaTime;
+            }
+            if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                _followingIndividu = false;
+                _camera.Position += new Vector2(0, 500) * deltaTime;
+            }
+            if (keyboardState.IsKeyDown(Keys.Left))
+            {
+                _followingIndividu = false;
+                _camera.Position -= new Vector2(500, 0) * deltaTime;
+            }
+            if (keyboardState.IsKeyDown(Keys.Right))
+            {
+                _followingIndividu = false;
+                _camera.Position += new Vector2(500, 0) * deltaTime;
+            }
+            if (keyboardState.IsKeyDown(Keys.NumPad0))
+            {
+                _camera.Zoom -= 0.3f * deltaTime;
+            }
+            if (keyboardState.IsKeyDown(Keys.NumPad1))
+            {
+                _camera.Zoom += 0.3f * deltaTime;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Space) && prevKeyboard.IsKeyDown(Keys.Space) == false)
+                GameOnPause = !GameOnPause;*/
+
+
+            // movement of camera
+            
 
             if (GameOnPause == false)
                 this._monde.Update(deltaTime * this._speedMultiplier);
