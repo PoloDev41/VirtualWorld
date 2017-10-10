@@ -184,6 +184,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WinForm_DataView\WinForm_DataView.csproj">
+      <Project>{be1c3544-65ee-48e4-9447-468a144c3b4d}</Project>
+      <Name>WinForm_DataView</Name>
+    </ProjectReference>
     <ProjectReference Include="MonoGameConsole\MonoGameConsole.csproj">
       <Project>{4c518047-bb66-4114-84e4-6ddd473719a7}</Project>
       <Name>MonoGameConsole</Name>

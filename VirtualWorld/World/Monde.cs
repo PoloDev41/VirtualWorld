@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
+using WinForm_DataView;
 
 namespace VirtualWorld
 {
@@ -118,6 +119,11 @@ namespace VirtualWorld
             set;
         }
 
+        /// <summary>
+        /// form to display data
+        /// </summary>
+        public Form1 DataViewer { get; set; }
+
         #region IConsoleCommand
 
         public string Name
@@ -173,13 +179,6 @@ namespace VirtualWorld
                         else
                             _viewPlante = true;
                         return "Tree view changed";
-                    case ("Save"):
-                        Task.Run(()=>
-                            {
-                                byte[] data = BinarySerializer.Serialize<Monde>(this);
-                            });
-                        
-                        return "Save";
                     default:
                         break;
                 }
@@ -370,6 +369,7 @@ namespace VirtualWorld
         }
 
         private int _moduloParcelle = 0;
+
         public void Update(float deltaTime)
         {
             if(this.Plantes.Count == 0 || this.Individus.Count == 0)
@@ -403,6 +403,10 @@ namespace VirtualWorld
                         break;
                     default:
                         break;
+                }
+                if(this.DataViewer != null)
+                {
+                    this.DataViewer.AddSample(this.Individus.Count);
                 }
             }
             HandleGlobalWarming(deltaTime);
