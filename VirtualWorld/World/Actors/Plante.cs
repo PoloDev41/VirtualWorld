@@ -13,6 +13,8 @@ namespace VirtualWorld
         public static readonly int TAILLE_IMAGE_PLANTE_PX = 32;
 
         public static Texture2D Plante1 { get; set; }
+        public static Texture2D Plante_Froide { get; set; }
+        public static Texture2D Plante_Chaude { get; set; }
 
         public List<ParcelleTerrain> TerreProche { get; set; }
 
@@ -67,7 +69,12 @@ namespace VirtualWorld
 
         private void ComputeRender()
         {
-            this.PictureUsed = Plante.Plante1;
+            if (this.TemperatureIdeal <= -10)
+                this.PictureUsed = Plante.Plante_Froide;
+            else if (this.TemperatureIdeal >= 20)
+                this.PictureUsed = Plante.Plante_Chaude;
+            else
+                this.PictureUsed = Plante.Plante1;
         }
 
         protected override void ApplyGenetic()
@@ -106,13 +113,13 @@ namespace VirtualWorld
 
             float wish = BienEtre * FactorAgrandissement * deltaTime;
             float engrai = RefParcelle.RemoveEngrais(wish);
-            this.PointDeVie += engrai*.75f;
+            this.PointDeVie += engrai*.60f;
 
             float f = this.PointDeVie - previous;
 
             while (this.PointDeVie > this.PointDeVieDemarrage * 4)
             {
-                this.PommeAAjouter++;
+                this.PommeAAjouter+=2;
                 this.PointDeVie -= this.PointDeVieDemarrage * 1.10f;
             }
 
@@ -120,6 +127,9 @@ namespace VirtualWorld
             {
                 float prevFactor = FactorAgrandissement;
                 this.FactorAgrandissement += f / (this.PointDeVie * this.FactorAgrandissement);
+
+                if (this.FactorAgrandissement > 8)
+                    this.FactorAgrandissement = 8;
 
                 if((int)prevFactor < (int)this.FactorAgrandissement)
                 {
@@ -135,7 +145,7 @@ namespace VirtualWorld
 
             for (int i = 0; i < this.TerreProche.Count; i++)
             {
-                this.TerreProche[i].RemoveEngrais(wish*1.5f);
+                this.TerreProche[i].RemoveEngrais(wish*1.75f);
             }
         }
 
@@ -145,8 +155,8 @@ namespace VirtualWorld
 
             while (this.PommeAAjouter > 0)
             {
-                x = this.Position.X + EtreVivant.rand.Next(-TAILLE_IMAGE_PLANTE_PX, TAILLE_IMAGE_PLANTE_PX + 1) * this.FactorAgrandissement;
-                y = this.Position.Y + EtreVivant.rand.Next(-TAILLE_IMAGE_PLANTE_PX, TAILLE_IMAGE_PLANTE_PX + 1) * this.FactorAgrandissement;
+                x = this.Position.X + EtreVivant.rand.Next(-TAILLE_IMAGE_PLANTE_PX, TAILLE_IMAGE_PLANTE_PX + 1) * this.FactorAgrandissement *2;
+                y = this.Position.Y + EtreVivant.rand.Next(-TAILLE_IMAGE_PLANTE_PX, TAILLE_IMAGE_PLANTE_PX + 1) * this.FactorAgrandissement *2;
 
                 if (x >= 0 && x < monde.TaillePx.X &&
                     y >= 0 && y < monde.TaillePx.Y)

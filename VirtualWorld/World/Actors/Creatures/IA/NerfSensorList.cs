@@ -81,7 +81,14 @@ namespace VirtualWorld.World.Actors.Creatures.IA
             Fruit nearest = FindNearestFruit(m, proprietaire);
             double angle = Math.Atan2(nearest.Position.Y - proprietaire.Position.Y, nearest.Position.X - proprietaire.Position.X);
 
-            return angle - proprietaire.Angle;
+            angle = angle - proprietaire.Angle;
+
+            if (angle > Math.PI)
+                angle = (float)(-2 * Math.PI) + proprietaire.Angle;
+            else if (angle < -Math.PI)
+                angle = (float)(2 * Math.PI) + proprietaire.Angle;
+
+            return angle;
         }
 
         public static double DistanceNearestFruit(Monde m, Individu proprietaire)

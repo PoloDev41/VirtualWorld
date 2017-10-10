@@ -27,6 +27,11 @@ namespace VirtualWorld.World.Actors.Creatures.IA
         public static void RotationIndividu(Monde m, Individu proprietaire, double power, float deltaTime)
         {
             proprietaire.Angle += (float)(power * deltaTime)*5;
+            if (proprietaire.Angle > Math.PI)
+                proprietaire.Angle = (float)(-2*Math.PI) + proprietaire.Angle;
+            else if (proprietaire.Angle < -Math.PI)
+                proprietaire.Angle = (float)(2 * Math.PI) + proprietaire.Angle;
+
             proprietaire.PointDeVie -= (float)(power * deltaTime * proprietaire.FactorAgrandissement);
         }
 

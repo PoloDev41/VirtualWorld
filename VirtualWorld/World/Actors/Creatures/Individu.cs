@@ -77,12 +77,13 @@ namespace VirtualWorld
             clone.TempsEgg = this.TempsEgg * ((float)Monde.rand.Next(90, 111) / 100f);
             clone.FactorAgrandissement = this.FactorAgrandissement * ((float)Monde.rand.Next(90, 111) / 100f);
             clone.SeuilEgg = clone.PointDeVieDemarrage * 1.5f;
-            clone.IdealTemperature = this.IdealTemperature + (float)(Monde.rand.NextDouble()*2+1);
+            clone.IdealTemperature = this.IdealTemperature + (float)(Monde.rand.NextDouble()*2-1);
             Color c = new Color(
                 (byte)Math.Min((this.Coloration.R * ((float)Monde.rand.Next(90, 111) / 100f)), 255),
                 (byte)Math.Min((this.Coloration.G * ((float)Monde.rand.Next(90, 111) / 100f)), 255),
                 (byte)Math.Min((this.Coloration.B * ((float)Monde.rand.Next(90, 111) / 100f)), 255));
             clone.Coloration = c;
+            clone.ComputeRender();
             return clone;
         }
 
@@ -92,7 +93,7 @@ namespace VirtualWorld
 
             //base.UpdateAsynch(deltaTime, monde);
             Age += deltaTime;
-            this.PointDeVie -= (5 * FactorAgrandissement * deltaTime * Math.Abs(this.IdealTemperature - this.RefParcelle.Temperature));
+            this.PointDeVie -= (5 * FactorAgrandissement * deltaTime * Math.Abs(this.IdealTemperature - this.RefParcelle.Temperature) + (float)Age/50);
             if (this.PointDeVie <= 0)
             {
                 this.Mort = true;
@@ -110,8 +111,8 @@ namespace VirtualWorld
 
             if(this.PointDeVie >= this.SeuilEgg)
             {
-                this.SeuilEgg *= 1.5f;
-                this.PointDeVie -= this.PointDeVieDemarrage * 1.1f;
+                this.SeuilEgg *= 1.2f;
+                this.PointDeVie -= this.PointDeVieDemarrage * 1.3f;
                 monde.Eggs.Add(new World.Actors.Egg(this.Clone(monde), monde));
                 NumberChild++;
             }
@@ -122,7 +123,7 @@ namespace VirtualWorld
                 NearestFruit_Opti.Mort == true)
             {
                 NearestFruit_Opti = null;
-                LastTimeToComputeFruit_Opti = 2;
+                LastTimeToComputeFruit_Opti = 5;
             }
             
         }

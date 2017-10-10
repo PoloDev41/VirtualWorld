@@ -97,7 +97,7 @@ namespace VirtualWorld
                 default:
                     break;
             }
-            this.Engrais += 100 * deltaTime;
+            this.Engrais += 85 * deltaTime;
             for (int i = this.RefFruits.Count - 1; i >= 0; i--)
             {
                 if(this.RefFruits[i].Mort == true)

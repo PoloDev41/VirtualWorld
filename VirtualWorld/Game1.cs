@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameConsole;
 using System;
+using WinForm_DataView;
 
 namespace VirtualWorld
 {
@@ -23,6 +24,8 @@ namespace VirtualWorld
         private MouseState prevMouseState;
         private bool _followingIndividu = false;
         private Individu _selectedIndividu;
+        private Form1 DataView = new Form1();
+
 
         public Game1()
         {
@@ -62,27 +65,15 @@ namespace VirtualWorld
             Font = Content.Load<SpriteFont>("ConsoleFont");
 
             _monde.LoadContent(Content);
-            _monde.CreateWorld(100, 70);
+            _monde.CreateWorld(120, 80);
             _camera.Position = new Vector2(125 * 9, 80 * 9);
 
             Services.AddService(typeof(SpriteBatch), spriteBatch);
 
-            /*console = new GameConsole(this, spriteBatch, new GameConsoleOptions
-            {
-                ToggleKey = (int)Keys.F1,
-                Font = Content.Load<SpriteFont>("ConsoleFont"),
-                FontColor = Color.LawnGreen,
-                Prompt = "~>",
-                PromptColor = Color.Crimson,
-                CursorColor = Color.OrangeRed,
-                BackgroundColor = new Color(Color.Black, 150),
-                PastCommandOutputColor = Color.Aqua,
-                BufferColor = Color.Gold
-            });
-            console.AddCommand(_monde, 
-                                this);*/
             this.prevKeyboard = Keyboard.GetState();
             this.prevMouseState = Mouse.GetState();
+            DataView.Show();
+            _monde.DataViewer = this.DataView;
         }
 
         /// <summary>
@@ -162,44 +153,8 @@ namespace VirtualWorld
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-
-          
-           /* if (keyboardState.IsKeyDown(Keys.Up))
-            {
-                _followingIndividu = false;
-                _camera.Position -= new Vector2(0, 500) * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.Down))
-            {
-                _followingIndividu = false;
-                _camera.Position += new Vector2(0, 500) * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.Left))
-            {
-                _followingIndividu = false;
-                _camera.Position -= new Vector2(500, 0) * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                _followingIndividu = false;
-                _camera.Position += new Vector2(500, 0) * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.NumPad0))
-            {
-                _camera.Zoom -= 0.3f * deltaTime;
-            }
-            if (keyboardState.IsKeyDown(Keys.NumPad1))
-            {
-                _camera.Zoom += 0.3f * deltaTime;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Space) && prevKeyboard.IsKeyDown(Keys.Space) == false)
-                GameOnPause = !GameOnPause;*/
-
-
-            // movement of camera
             
-
+       
             if (GameOnPause == false)
                 this._monde.Update(deltaTime * this._speedMultiplier);
 
@@ -217,8 +172,8 @@ namespace VirtualWorld
                     rec = new Rectangle(
                         (int)(this._monde.Individus[i].PositionImage.X),
                         (int)(this._monde.Individus[i].PositionImage.Y),
-                        (int)(this._monde.Individus[i].PictureUsed.Width * this._monde.Individus[i].FactorAgrandissement * this._camera.Zoom),
-                        (int)(this._monde.Individus[i].PictureUsed.Height * this._monde.Individus[i].FactorAgrandissement * this._camera.Zoom));
+                        (int)(this._monde.Individus[i].PictureUsed.Width * this._monde.Individus[i].FactorAgrandissement*2 * this._camera.Zoom),
+                        (int)(this._monde.Individus[i].PictureUsed.Height * this._monde.Individus[i].FactorAgrandissement*2* this._camera.Zoom));
                     if(rec.Contains(worldPosition))
                     {
                         this._selectedIndividu = this._monde.Individus[i];
@@ -240,8 +195,6 @@ namespace VirtualWorld
 
             if(_followingIndividu == true && this._selectedIndividu != null)
             {
-                /*Vector2 screenPosition = Vector2.Transform(this._selectedIndividu.Position, _camera.GetViewMatrix());
-                screenPosition -= new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2);*/
                 this._camera.Position = this._selectedIndividu.Position - 
                                         new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2);
             }

@@ -17,7 +17,7 @@ namespace VirtualWorld
 
         public static Texture2D Pomme { get; set; }
 
-        public float LuckGraine { get; set; } = 100;
+        public float LuckGraine { get; set; } = 75;
 
         /// <summary>
         /// cree un nouveau fruit

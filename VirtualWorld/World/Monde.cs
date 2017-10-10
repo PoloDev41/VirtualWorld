@@ -10,6 +10,11 @@ using Microsoft.Xna.Framework.Content;
 using MonoGameConsole;
 using System.Threading.Tasks;
 using VirtualWorld.World.Actors;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
+using WinForm_DataView;
 
 namespace VirtualWorld
 {
@@ -21,6 +26,7 @@ namespace VirtualWorld
         SAISON2_1
     }
 
+    [Serializable]
     public class Monde : IConsoleCommand
     {
         enum ViewType
@@ -46,14 +52,19 @@ namespace VirtualWorld
         public float AltitudeMax { get; set; }
         public float AltitudeMin { get; set; }
 
-        public static readonly int TimeSeason = 10;
-        public static readonly int TimeInterSeason = 30;
+        public static readonly int TimeSeason = 20;
+        public static readonly int TimeInterSeason = 60;
         public static readonly int TimeChangementGlobalWarming = (TimeSeason * 2 + TimeInterSeason * 2) * 1;
         public static Random rand = new Random();
 
         private bool _viewPlante = true;
         private ViewType _view = ViewType.NORMAL;
         private float _timeSaison = TimeSeason;
+
+        /// <summary>
+        /// ratio of alpha when plante are displayed
+        /// </summary>
+        private int ratio_alpha_plante = 255; 
 
         /// <summary>
         /// number of years of the world
@@ -108,6 +119,11 @@ namespace VirtualWorld
             set;
         }
 
+        /// <summary>
+        /// form to display data
+        /// </summary>
+        public Form1 DataViewer { get; set; }
+
         #region IConsoleCommand
 
         public string Name
@@ -153,9 +169,16 @@ namespace VirtualWorld
                     case ("Tree"):
                         if (arguments.Length > 1 && arguments[1] == "Disable")
                             _viewPlante = false;
+                        else if (arguments.Length > 1 && arguments[1] == "Ratio")
+                        {
+                            if (arguments.Length > 2 && int.TryParse(arguments[2], out ratio_alpha_plante) == false)
+                            {
+                                ratio_alpha_plante = 255;
+                            }
+                        }
                         else
                             _viewPlante = true;
-                        break;
+                        return "Tree view changed";
                     default:
                         break;
                 }
@@ -170,7 +193,7 @@ namespace VirtualWorld
             {
                 return "-Generate" + Environment.NewLine +
                         "-View [Temperature-Altitude-Engrais]" + Environment.NewLine +
-                        "Tree [Enable;Disable]";
+                        "Tree [Enable;Disable;Ratio[0;255]]";
             }
         }
 
@@ -283,10 +306,10 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 10);
-            Fruits = Factory.AddFruits(this, 100);
-            Individus = Factory.AddIndividus(this, 10);
-            Eggs = Factory.AddEggs(this, 10);
+            Plantes = Factory.AddPlantes(this, 40);
+            Fruits = Factory.AddFruits(this, 150);
+            Individus = Factory.AddIndividus(this, 12);
+            Eggs = Factory.AddEggs(this, 25);
             this.Graines = new List<Graine>();
 
             for (int i = 0; i < 100; i++)
@@ -331,6 +354,8 @@ namespace VirtualWorld
             ParcelleTerrain.Blanc = content.Load<Texture2D>("Images//blanc");
 
             Plante.Plante1 = content.Load<Texture2D>("Images//plante");
+            Plante.Plante_Chaude = content.Load<Texture2D>("Images//plantechaud");
+            Plante.Plante_Froide = content.Load<Texture2D>("Images//plantefroid");
 
             Fruit.Pomme = content.Load<Texture2D>("Images//pomme");
 
@@ -344,6 +369,7 @@ namespace VirtualWorld
         }
 
         private int _moduloParcelle = 0;
+
         public void Update(float deltaTime)
         {
             if(this.Plantes.Count == 0 || this.Individus.Count == 0)
@@ -377,6 +403,10 @@ namespace VirtualWorld
                         break;
                     default:
                         break;
+                }
+                if(this.DataViewer != null)
+                {
+                    this.DataViewer.AddSample(this.Individus.Count);
                 }
             }
             HandleGlobalWarming(deltaTime);
@@ -502,7 +532,7 @@ namespace VirtualWorld
             {
                 _yearStartWarming = this.Years;
                 GlobalWarmingAction = true;
-                _newTemperatureOffset = (float)(rand.Next(-2, 3) + (2*rand.NextDouble()+1));
+                _newTemperatureOffset = (float)(rand.Next(-5, 6) + (2*rand.NextDouble()+1));
                 _oldTemperatureOffset = ParcelleTerrain.OffsetTemperatureParcelle;
             }
             else if(GlobalWarmingAction == true)
@@ -532,7 +562,7 @@ namespace VirtualWorld
                 spriteBatch.Draw(this.Individus[i].PictureUsed,
                                 this.Individus[i].PositionImage, null,this.Individus[i].Coloration,(float) (this.Individus[i].Angle),
                                 new Vector2(this.Individus[i].PictureUsed.Width/2, this.Individus[i].PictureUsed.Height/2),
-                                Math.Max(0.1f, this.Individus[i].FactorAgrandissement),
+                                Math.Max(0.1f, this.Individus[i].FactorAgrandissement *2 ),
                                    SpriteEffects.None, 0f);
             }
         }
@@ -569,7 +599,7 @@ namespace VirtualWorld
                         ratio = (byte)Math.Min(255,
                             (this.Plantes[i].TemperatureIdeal * 255 / this.TemperatureMin));
 
-                        spriteBatch.Draw(this.Plantes[i].PictureUsed, this.Plantes[i].PositionImage, null, new Color(0, 0, ratio), 0f, Vector2.Zero, this.Plantes[i].FactorAgrandissement,
+                        spriteBatch.Draw(this.Plantes[i].PictureUsed, this.Plantes[i].PositionImage, null, new Color(0, 0, ratio), 0f, Vector2.Zero, this.Plantes[i].FactorAgrandissement/2,
                                       SpriteEffects.None, depth);
                     }
                     else
@@ -595,9 +625,8 @@ namespace VirtualWorld
                     {
                         depth = (this.Plantes[i].Position.Y) / (this.TaillePx.Y);
                     }
-
-                    spriteBatch.Draw(Plante.Plante1, this.Plantes[i].PositionImage, null, Color.White, 0f, Vector2.Zero, this.Plantes[i].FactorAgrandissement,
-                                       SpriteEffects.None, depth);
+                    spriteBatch.Draw(this.Plantes[i].PictureUsed, this.Plantes[i].PositionImage, null, new Color(255,255,255, ratio_alpha_plante) , 0f, 
+                                        Vector2.Zero, this.Plantes[i].FactorAgrandissement,SpriteEffects.None, depth);
                 }
             }
         }
