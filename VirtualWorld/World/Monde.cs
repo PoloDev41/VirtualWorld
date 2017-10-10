@@ -10,6 +10,10 @@ using Microsoft.Xna.Framework.Content;
 using MonoGameConsole;
 using System.Threading.Tasks;
 using VirtualWorld.World.Actors;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
 
 namespace VirtualWorld
 {
@@ -21,6 +25,7 @@ namespace VirtualWorld
         SAISON2_1
     }
 
+    [Serializable]
     public class Monde : IConsoleCommand
     {
         enum ViewType
@@ -167,7 +172,14 @@ namespace VirtualWorld
                         }
                         else
                             _viewPlante = true;
-                        break;
+                        return "Tree view changed";
+                    case ("Save"):
+                        Task.Run(()=>
+                            {
+                                byte[] data = BinarySerializer.Serialize<Monde>(this);
+                            });
+                        
+                        return "Save";
                     default:
                         break;
                 }
@@ -295,10 +307,10 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 20);
-            Fruits = Factory.AddFruits(this, 100);
-            Individus = Factory.AddIndividus(this, 10);
-            Eggs = Factory.AddEggs(this, 20);
+            Plantes = Factory.AddPlantes(this, 40);
+            Fruits = Factory.AddFruits(this, 150);
+            Individus = Factory.AddIndividus(this, 12);
+            Eggs = Factory.AddEggs(this, 25);
             this.Graines = new List<Graine>();
 
             for (int i = 0; i < 100; i++)

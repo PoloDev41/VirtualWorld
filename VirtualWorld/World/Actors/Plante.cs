@@ -128,8 +128,8 @@ namespace VirtualWorld
                 float prevFactor = FactorAgrandissement;
                 this.FactorAgrandissement += f / (this.PointDeVie * this.FactorAgrandissement);
 
-                if (this.FactorAgrandissement > 16)
-                    this.FactorAgrandissement = 16;
+                if (this.FactorAgrandissement > 8)
+                    this.FactorAgrandissement = 8;
 
                 if((int)prevFactor < (int)this.FactorAgrandissement)
                 {

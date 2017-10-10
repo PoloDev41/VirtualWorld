@@ -62,7 +62,7 @@ namespace VirtualWorld
             Font = Content.Load<SpriteFont>("ConsoleFont");
 
             _monde.LoadContent(Content);
-            _monde.CreateWorld(100, 70);
+            _monde.CreateWorld(120, 80);
             _camera.Position = new Vector2(125 * 9, 80 * 9);
 
             Services.AddService(typeof(SpriteBatch), spriteBatch);
