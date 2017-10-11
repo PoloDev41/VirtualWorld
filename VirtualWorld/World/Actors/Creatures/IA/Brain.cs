@@ -71,7 +71,7 @@ namespace VirtualWorld.World.Actors.Creature.IA
                 }
                 tmp.Add(s);
             }
-            if(Monde.rand.Next(0, 101) < 2)
+            if(tmp.Count > 0 && Monde.rand.Next(0, 101) < 2)
             {
                 int indexToRemove = Monde.rand.Next(0, tmp.Count);
                 tmp.RemoveAt(indexToRemove);

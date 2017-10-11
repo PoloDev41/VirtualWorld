@@ -91,19 +91,31 @@ namespace VirtualWorld.World.Actors.Creatures.IA
             return angle;
         }
 
+        public static double DeltaTemperatureIndividu(Monde m, Individu proprietaire)
+        {
+            return Math.Abs(proprietaire.IdealTemperature - proprietaire.RefParcelle.Temperature);
+        }
+
+        public static double HealthIndividu(Monde m, Individu proprietaire)
+        {
+            return proprietaire.PointDeVie / proprietaire.PointDeVieDemarrage;
+        }
+
         public static double DistanceNearestFruit(Monde m, Individu proprietaire)
         {
             if (m.Fruits.Count == 0)
-                return 1000000;
+                return 0;
 
             Fruit nearest = FindNearestFruit(m, proprietaire);
-            return Vector2.Distance(nearest.Position, proprietaire.Position)/100;
+            return 100/Vector2.Distance(nearest.Position, proprietaire.Position);
         }
 
         public static NerfSensor[] SensorStock = new NerfSensor[]
         {
             (NerfSensor)AngleNearestFruit,
-            DistanceNearestFruit
+            DistanceNearestFruit,
+            HealthIndividu,
+            DeltaTemperatureIndividu
         };
 
         public static NerfSensor GetRandomSensor()

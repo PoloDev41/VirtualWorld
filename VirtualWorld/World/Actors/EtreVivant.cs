@@ -78,6 +78,12 @@ namespace VirtualWorld
             this.Mort = false;
         }
 
+        /// <summary>
+        /// returne une parcelle de terrain aléatoire proche de l'etre vivant
+        /// </summary>
+        /// <param name="monde">monde</param>
+        /// <param name="taille">taille du cercle</param>
+        /// <returns>parcelle de terrain</returns>
         protected ParcelleTerrain GetParcelleProche(Monde monde, int taille = 1)
         {
             List<ParcelleTerrain> pt = new List<ParcelleTerrain>();

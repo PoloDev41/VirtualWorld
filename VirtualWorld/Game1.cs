@@ -24,7 +24,7 @@ namespace VirtualWorld
         private MouseState prevMouseState;
         private bool _followingIndividu = false;
         private Individu _selectedIndividu;
-        private Form1 DataView = new Form1();
+        private Form1 DataView;
 
 
         public Game1()
@@ -72,8 +72,7 @@ namespace VirtualWorld
 
             this.prevKeyboard = Keyboard.GetState();
             this.prevMouseState = Mouse.GetState();
-            DataView.Show();
-            _monde.DataViewer = this.DataView;
+            
         }
 
         /// <summary>
@@ -98,6 +97,9 @@ namespace VirtualWorld
 
             if (this.console == null && System.Windows.Forms.Application.OpenForms.Count > 0)
             {
+                DataView = new Form1();
+                DataView.Show();
+                _monde.DataViewer = this.DataView;
                 console = new GameConsole(this, spriteBatch, new GameConsoleOptions
                 {
                     ToggleKey = (int)Keys.F1,
@@ -177,6 +179,10 @@ namespace VirtualWorld
                     if(rec.Contains(worldPosition))
                     {
                         this._selectedIndividu = this._monde.Individus[i];
+                        if(this.DataView !=null)
+                        {
+                            this.DataView.DrawBrain(this._selectedIndividu.Intelligence);
+                        }
                         find = true;
                         break;
                     }

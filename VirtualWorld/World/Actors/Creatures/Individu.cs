@@ -71,11 +71,11 @@ namespace VirtualWorld
         public Individu Clone(Monde m)
         {
             Individu clone = new Individu(new Vector2(this.Position.X, this.Position.Y), m);
+            clone.FactorAgrandissement = this.FactorAgrandissement * ((float)Monde.rand.Next(90, 111) / 100f);
             clone.PointDeVieDemarrage = this.PointDeVieDemarrage * ((float)Monde.rand.Next(90,111)/100f);
             clone.PointDeVie = this.PointDeVieDemarrage;
             clone.Intelligence = this.Intelligence.Clone();
-            clone.TempsEgg = this.TempsEgg * ((float)Monde.rand.Next(90, 111) / 100f);
-            clone.FactorAgrandissement = this.FactorAgrandissement * ((float)Monde.rand.Next(90, 111) / 100f);
+            clone.TempsEgg = this.TempsEgg * ((float)Monde.rand.Next(90, 111) / 100f) * clone.FactorAgrandissement;
             clone.SeuilEgg = clone.PointDeVieDemarrage * 1.5f;
             clone.IdealTemperature = this.IdealTemperature + (float)(Monde.rand.NextDouble()*2-1);
             Color c = new Color(
@@ -112,7 +112,7 @@ namespace VirtualWorld
             if(this.PointDeVie >= this.SeuilEgg)
             {
                 this.SeuilEgg *= 1.2f;
-                this.PointDeVie -= this.PointDeVieDemarrage * 1.3f;
+                this.PointDeVie -= this.PointDeVieDemarrage;
                 monde.Eggs.Add(new World.Actors.Egg(this.Clone(monde), monde));
                 NumberChild++;
             }
@@ -123,7 +123,7 @@ namespace VirtualWorld
                 NearestFruit_Opti.Mort == true)
             {
                 NearestFruit_Opti = null;
-                LastTimeToComputeFruit_Opti = 5;
+                LastTimeToComputeFruit_Opti = 10;
             }
             
         }
@@ -143,8 +143,6 @@ namespace VirtualWorld
         { 
             this.FactorAgrandissement = 1f;
             RefreshPosition(m);
-            /*TemperatureIdeal = rand.Next((int)Math.Round(m.TemperatureMin),
-                                            (int)Math.Round(m.TemperatureMax)) + (float)rand.NextDouble();*/
             this.RefParcelle = m.Parcelles[(int)this.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX][(int)this.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX];
             this.Intelligence = new Brain();
         }

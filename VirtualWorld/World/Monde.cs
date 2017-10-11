@@ -254,6 +254,9 @@ namespace VirtualWorld
 
         public void CreateWorld(int sizex, int sizey)
         {
+            if (DataViewer != null)
+                DataViewer.ResetChart();
+
             _timeSaison = 10;
             this.SaisonCourante = SeasonTournament.SAISON1;
             Parcelles = Factory.GenerateGround(sizex, sizey);
@@ -306,7 +309,7 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 40);
+            Plantes = Factory.AddPlantes(this, 50);
             Fruits = Factory.AddFruits(this, 150);
             Individus = Factory.AddIndividus(this, 12);
             Eggs = Factory.AddEggs(this, 25);
@@ -372,7 +375,8 @@ namespace VirtualWorld
 
         public void Update(float deltaTime)
         {
-            if(this.Plantes.Count == 0 || this.Individus.Count == 0)
+            if(this.Plantes.Count == 0 || 
+                (this.Individus.Count == 0 && this.Eggs.Count == 0))
             {
                 this.CreateWorld(this.Parcelles.Length, this.Parcelles[0].Length);
                 return;
@@ -406,7 +410,7 @@ namespace VirtualWorld
                 }
                 if(this.DataViewer != null)
                 {
-                    this.DataViewer.AddSample(this.Individus.Count);
+                    this.DataViewer.AddSample(this.Individus.Count, this.Eggs.Count);
                 }
             }
             HandleGlobalWarming(deltaTime);
@@ -526,6 +530,7 @@ namespace VirtualWorld
         private float _oldTemperatureOffset = 0;
         private int _yearStartWarming = 0;
         public bool GlobalWarmingAction = false;
+
         private void HandleGlobalWarming(float deltaTime)
         {
             if(this.Years % 5 == 0 && GlobalWarmingAction == false)
