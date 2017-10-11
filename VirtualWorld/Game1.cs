@@ -179,6 +179,10 @@ namespace VirtualWorld
                     if(rec.Contains(worldPosition))
                     {
                         this._selectedIndividu = this._monde.Individus[i];
+                        if(this.DataView !=null)
+                        {
+                            this.DataView.DrawBrain(this._selectedIndividu.Intelligence);
+                        }
                         find = true;
                         break;
                     }
