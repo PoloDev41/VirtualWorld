@@ -91,6 +91,7 @@ namespace VirtualWorld.World
                 }
             };
             ind.Intelligence = b;
+            ind.Coloration = new Microsoft.Xna.Framework.Color((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble());
             ind.TempsEgg = (float)(rand.Next(8, 31) + rand.NextDouble());
             ind.IdealTemperature = m.Parcelles[(int)(ind.Position.X / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)]
                                 [(int)(ind.Position.Y / ParcelleTerrain.TAILLE_IMAGE_PARCELLE_PX)].Temperature;

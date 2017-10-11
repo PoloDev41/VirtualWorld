@@ -306,7 +306,7 @@ namespace VirtualWorld
             Eggs = new List<Egg>();
             Graines = new List<Graine>();
 
-            Plantes = Factory.AddPlantes(this, 40);
+            Plantes = Factory.AddPlantes(this, 50);
             Fruits = Factory.AddFruits(this, 150);
             Individus = Factory.AddIndividus(this, 12);
             Eggs = Factory.AddEggs(this, 25);
@@ -526,6 +526,7 @@ namespace VirtualWorld
         private float _oldTemperatureOffset = 0;
         private int _yearStartWarming = 0;
         public bool GlobalWarmingAction = false;
+
         private void HandleGlobalWarming(float deltaTime)
         {
             if(this.Years % 5 == 0 && GlobalWarmingAction == false)

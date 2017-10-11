@@ -133,19 +133,27 @@ namespace VirtualWorld
 
                 if((int)prevFactor < (int)this.FactorAgrandissement)
                 {
-                    ParcelleTerrain p = null;
-                    do
+                    for (int i = 0; i < (int)FactorAgrandissement; i++)
                     {
-                        p = GetParcelleProche(monde, (int)FactorAgrandissement);
-                    } while (this.TerreProche.IndexOf(p) != -1);
-                    this.TerreProche.Add(p);
+                        ParcelleTerrain p = null;
+                        do
+                        {
+                            p = GetParcelleProche(monde, (int)FactorAgrandissement);
+                        } while (this.TerreProche.IndexOf(p) != -1);
+                        this.TerreProche.Add(p);
+                    }
+                    
                 }
                 this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement / 2, this.Position.Y - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement);
+            }
+            else if(FactorAgrandissement <= 0.5)
+            {
+                this.PointDeVie -= (5 * FactorAgrandissement * deltaTime);
             }
 
             for (int i = 0; i < this.TerreProche.Count; i++)
             {
-                this.TerreProche[i].RemoveEngrais(wish*1.75f);
+                this.TerreProche[i].RemoveEngrais(wish*1.50f);
             }
         }
 
