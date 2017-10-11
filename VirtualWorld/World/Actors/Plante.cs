@@ -119,7 +119,7 @@ namespace VirtualWorld
 
             while (this.PointDeVie > this.PointDeVieDemarrage * 4)
             {
-                this.PommeAAjouter+=2;
+                this.PommeAAjouter+=3;
                 this.PointDeVie -= this.PointDeVieDemarrage * 1.10f;
             }
 
@@ -133,12 +133,12 @@ namespace VirtualWorld
 
                 if((int)prevFactor < (int)this.FactorAgrandissement)
                 {
-                    for (int i = 0; i < (int)FactorAgrandissement; i++)
+                    for (int i = 0; i < (int)FactorAgrandissement*2; i++)
                     {
                         ParcelleTerrain p = null;
                         do
                         {
-                            p = GetParcelleProche(monde, (int)FactorAgrandissement);
+                            p = GetParcelleProche(monde, (int)FactorAgrandissement+1);
                         } while (this.TerreProche.IndexOf(p) != -1);
                         this.TerreProche.Add(p);
                     }
@@ -146,7 +146,7 @@ namespace VirtualWorld
                 }
                 this.PositionImage = new Vector2(this.Position.X - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement / 2, this.Position.Y - TAILLE_IMAGE_PLANTE_PX * this.FactorAgrandissement);
             }
-            else if(FactorAgrandissement <= 0.5)
+            else if(FactorAgrandissement <= 0.75)
             {
                 this.PointDeVie -= (5 * FactorAgrandissement * deltaTime);
             }

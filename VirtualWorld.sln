@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualWorld", "VirtualWorl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameConsole", "VirtualWorld\MonoGameConsole\MonoGameConsole.csproj", "{4C518047-BB66-4114-84E4-6DDD473719A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinForm_DataView", "WinForm_DataView\WinForm_DataView.csproj", "{BE1C3544-65EE-48E4-9447-468A144C3B4D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,14 +29,6 @@ Global
 		{4C518047-BB66-4114-84E4-6DDD473719A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C518047-BB66-4114-84E4-6DDD473719A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{4C518047-BB66-4114-84E4-6DDD473719A7}.Release|x86.Build.0 = Release|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Debug|x86.Build.0 = Debug|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Release|x86.ActiveCfg = Release|Any CPU
-		{BE1C3544-65EE-48E4-9447-468A144C3B4D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

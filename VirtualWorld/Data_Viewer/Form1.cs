@@ -17,9 +17,18 @@ namespace WinForm_DataView
             InitializeComponent();
         }
 
-        public void AddSample(int nbrIndividu)
+        public void ResetChart()
+        {
+            foreach (var item in this.chart1.Series)
+            {
+                item.Points.Clear();
+            }
+        }
+
+        public void AddSample(int nbrIndividu, int nbrEggs)
         {
             this.chart1.Series["Individus"].Points.AddY(nbrIndividu);
+            this.chart1.Series["Eggs"].Points.AddY(nbrEggs);
         }
     }
 }
